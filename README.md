@@ -1,6 +1,9 @@
 sbt-vuefy
 ==========
 
+[![CircleCI](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master.svg?style=svg)](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master)
+[![codecov](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy/branch/master/graph/badge.svg)](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy)
+
 sbt-vuefy integrates Vue's single components into Playframework.
 
 It compiles and recompiles changes of Vue components when changed when running Playframework with `sbt run`.

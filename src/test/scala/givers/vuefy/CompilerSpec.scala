@@ -63,7 +63,7 @@ object CompilerSpec extends BaseSpec {
           ).mkString(" ")),
           argThat[File] { arg => Files.isSameFile(arg.toPath, Paths.get(sourceDir)) },
           varArgsThat[(String, String)] { varargs =>
-            varargs.size == 1 && varargs.head == ("NODE_PATH" -> new File("./node_modules").getAbsolutePath)
+            varargs.size == 1 && varargs.head == ("NODE_PATH" -> new File("./node_modules").getCanonicalPath)
           }
         )
       }
@@ -108,7 +108,7 @@ object CompilerSpec extends BaseSpec {
           ).mkString(" ")),
           argThat[File] { arg => Files.isSameFile(arg.toPath, Paths.get(sourceDir)) },
           varArgsThat[(String, String)] { varargs =>
-            varargs.size == 1 && varargs.head == ("NODE_PATH" -> new File("./node_modules").getAbsolutePath)
+            varargs.size == 1 && varargs.head == ("NODE_PATH" -> new File("./node_modules").getCanonicalPath)
           }
         )
       }

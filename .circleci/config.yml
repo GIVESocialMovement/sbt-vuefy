@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk-node-browsers
+
+    working_directory: ~/repo
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "build.sbt" }}
+          - v1-dependencies-
+
+      - run: yarn install
+      - run: sbt coverage test coverageReport
+      - run: bash <(curl -s https://codecov.io/bash) -Z
+      - run: mkdir -p ./target/junit && cp -R ./target/test-reports ./target/junit/test-reports
+
+      - save_cache:
+          paths:
+            - ~/.m2
+            - node_modules
+          key: v1-dependencies--{{ checksum "build.sbt" }}
+
+      - store_test_results:
+          path: ./target/junit
