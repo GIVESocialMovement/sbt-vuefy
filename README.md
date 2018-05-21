@@ -1,7 +1,7 @@
 sbt-vuefy
 ==========
 
-[![CircleCI](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master.svg?style=svg)](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master)
+[![CircleCI](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master.svg?style=shield)](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master)
 [![codecov](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy/branch/master/graph/badge.svg)](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy)
 
 sbt-vuefy integrates Vue's single components into Playframework.
