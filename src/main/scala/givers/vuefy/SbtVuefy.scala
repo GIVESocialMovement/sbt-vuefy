@@ -20,6 +20,7 @@ object SbtVuefy extends AutoPlugin {
       val vuefy = TaskKey[Seq[File]]("vuefy", "Generate compiled Javascripts files from Vue components.")
       val webpackBinary = TaskKey[String]("vuefyWebpackBinary", "The binary location for webpack.")
       val webpackConfig = TaskKey[String]("vuefyWebpackConfig", "The location for webpack config.")
+      val nodeModulesPath = TaskKey[String]("vuefyNodeModules", "The location of the node_modules.")
       val prodCommands = TaskKey[Set[String]]("vuefyProdCommands", "A set of SBT commands that triggers production build. The default is `stage`. In other words, use -p (as opposed to -d) with webpack.")
     }
   }
@@ -30,6 +31,7 @@ object SbtVuefy extends AutoPlugin {
     excludeFilter in vuefy := HiddenFileFilter || "_*",
     includeFilter in vuefy := "*.vue",
     prodCommands := Set("stage"),
+    nodeModulesPath := "./node_modules",
     webpackBinary := "please-define-the-binary",
     webpackConfig := "please-define-the-config-location.js",
     resourceManaged in vuefy := webTarget.value / "vuefy" / "main",
@@ -50,6 +52,7 @@ object SbtVuefy extends AutoPlugin {
     val isProd = state.value.currentCommand.exists { exec => prodCommandValues.contains(exec.commandLine) }
     val webpackBinaryLocation = (webpackBinary in vuefy).value
     val webpackConfigLocation = (webpackConfig in vuefy).value
+    val nodeModulesLocation = (nodeModulesPath in vuefy).value
 
     val sources = (sourceDir ** ((includeFilter in vuefy in Assets).value -- (excludeFilter in vuefy in Assets).value)).get
 
@@ -70,7 +73,14 @@ object SbtVuefy extends AutoPlugin {
         logger.info(s"[Vuefy] No changes to compile")
       }
 
-      val compiler = new Compiler(webpackBinaryLocation, webpackConfigLocation, sourceDir, targetDir, isProd, logger)
+      val compiler = new Compiler(
+        new File(webpackBinaryLocation),
+        new File(webpackConfigLocation),
+        sourceDir,
+        targetDir,
+        isProd,
+        logger,
+        new File(nodeModulesLocation))
 
       // Compile all modified sources at once
       val result = compiler.compile(modifiedSources.map(_.toPath))

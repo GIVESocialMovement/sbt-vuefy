@@ -22,12 +22,13 @@ object CompilerSpec extends BaseSpec {
       val sourceDir = "/sourceDir/somepath"
       val targetDir = "/targetDir/anotherpath"
       val compiler = new Compiler(
-        s"$sourceDir/binary/webpack.binary",
-        s"$sourceDir/config/webpack.config.js",
+        new File(s"$sourceDir/binary/webpack.binary"),
+        new File(s"$sourceDir/config/webpack.config.js"),
         new File(sourceDir),
         new File(targetDir),
         true,
         logger,
+        new File("./node_modules"),
         shell,
         computeDependencyTree,
         prepareWebpackConfig
@@ -49,11 +50,11 @@ object CompilerSpec extends BaseSpec {
         result.success ==> false
         result.entries.isEmpty ==> true
 
-        verify(prepareWebpackConfig).apply(s"$sourceDir/config/webpack.config.js")
+        verify(prepareWebpackConfig).apply(argThat[File] { arg => Files.isSameFile(Paths.get(s"$sourceDir/config/webpack.config.js"), arg.toPath) })
         verifyZeroInteractions(computeDependencyTree)
         verify(shell).execute(
           eq(Seq(
-            "binary/webpack.binary",
+            s"$sourceDir/binary/webpack.binary",
             "--config", "/new/webpack/config",
             "--output-path", targetDir,
             "-p",
@@ -92,13 +93,13 @@ object CompilerSpec extends BaseSpec {
         result.entries(1).filesRead.map(_.toString) ==> Set(s"$sourceDir/./a/b.vue", s"$sourceDir/./a/b/c.vue")
         result.entries(1).filesWritten.map(_.toString) ==> Set(s"$targetDir/a/b.js")
 
-        verify(prepareWebpackConfig).apply(s"$sourceDir/config/webpack.config.js")
+        verify(prepareWebpackConfig).apply(new File(s"$sourceDir/config/webpack.config.js"))
         verify(computeDependencyTree).apply(argThat[File] { arg =>
           Files.isSameFile(arg.toPath, Paths.get(s"$targetDir/sbt-vuefy-tree.json"))
         })
         verify(shell).execute(
           eq(Seq(
-            "binary/webpack.binary",
+            s"$sourceDir/binary/webpack.binary",
             "--config", "/new/webpack/config",
             "--output-path", targetDir,
             "-p",
@@ -115,7 +116,7 @@ object CompilerSpec extends BaseSpec {
 
     'getWebpackConfig - {
       val originalWebpackConfig = Files.createTempFile("test", "test")
-      val webpackConfig = (new PrepareWebpackConfig).apply(originalWebpackConfig.toFile.getAbsolutePath)
+      val webpackConfig = (new PrepareWebpackConfig).apply(originalWebpackConfig.toFile)
       val sbtVuefyFilePath = Paths.get(s"${new File(webpackConfig).getParentFile.getAbsolutePath}/sbt-vuefy-plugin.js")
 
       Files.exists(Paths.get(webpackConfig)) ==> true

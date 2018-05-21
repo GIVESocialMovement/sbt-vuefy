@@ -46,9 +46,9 @@ class ComputeDependencyTree {
       .mapValues(_.map(_._2).toSet)
 
     flatten(deps)
-      // We only care about our directory.
-      .filter { case (key, _) => key.startsWith("./vue/")}
-      .mapValues(_.filter(_.startsWith("./vue/")))
+      // We only care about our directories.
+      .filter { case (key, _) => key.startsWith("./")}
+      .mapValues(_.filter(_.startsWith("./")))
   }
 
   private[this] def flatten(deps: Map[String, Set[String]]): Map[String, Set[String]] = {
@@ -69,13 +69,13 @@ class ComputeDependencyTree {
 }
 
 class PrepareWebpackConfig {
-  def apply(originalWebpackConfig: String) = {
+  def apply(originalWebpackConfig: File) = {
     import sbt._
 
     val tmpDir = Files.createTempDirectory("sbt-vuefy")
     val targetFile = tmpDir.toFile / "webpack.config.js"
 
-    Files.copy(new File(originalWebpackConfig).toPath, targetFile.toPath)
+    Files.copy(originalWebpackConfig.toPath, targetFile.toPath)
 
     new PrintWriter(tmpDir.toFile / "sbt-vuefy-plugin.js") {
       try {
@@ -90,12 +90,13 @@ class PrepareWebpackConfig {
 }
 
 class Compiler(
-  webpackBinary: String,
-  webpackConfig: String,
+  webpackBinary: File,
+  webpackConfig: File,
   sourceDir: File,
   targetDir: File,
   isProd: Boolean,
   logger: ManagedLogger,
+  nodeModules: File,
   shell: Shell = new Shell,
   dependencyComputer: ComputeDependencyTree = new ComputeDependencyTree,
   prepareWebpackConfig: PrepareWebpackConfig = new PrepareWebpackConfig
@@ -115,9 +116,9 @@ class Compiler(
 
     val cmd = (
       Seq(
-        sourceDir.toPath.relativize(new File(webpackBinary).getAbsoluteFile.toPath).toString, // Because we run on sourceDir.
+        webpackBinary.getCanonicalPath,
         "--config", prepareWebpackConfig.apply(webpackConfig),
-        "--output-path", targetDir.getAbsolutePath,
+        "--output-path", targetDir.getCanonicalPath,
         if (isProd) { "-p" } else { "-d" }
       ) ++ inputs.map { input =>
         s"""${input.name}=${input.path.toAbsolutePath.toString}"""
@@ -125,7 +126,7 @@ class Compiler(
     ).mkString(" ")
 
     logger.info(cmd)
-    val exitCode = shell.execute(cmd, sourceDir, "NODE_PATH" -> new File("./node_modules").getAbsolutePath)
+    val exitCode = shell.execute(cmd, sourceDir, "NODE_PATH" -> nodeModules.getCanonicalPath)
     val success = exitCode == 0
 
     CompilationResult(

@@ -13,8 +13,6 @@ module.exports = {
   plugins: [
     new SbtVuefyPlugin() // Required by sbt-vuefy.
   ],
-  cache: true,
-  bail: true,
   module: {
     rules: [
       {
@@ -39,38 +37,7 @@ module.exports = {
   },
   performance: {
     hints: 'error',
-    maxAssetSize: 1500000,
-    maxEntrypointSize: 1500000,
-    assetFilter: function(assetFilename) {
-      return assetFilename.endsWith('.js');
-    }
   },
+  stats: 'minimal',
   devtool: ''
-}
-
-if (process.env.NODE_ENV === 'production') {
-  console.log('Webpack for production')
-  module.exports.devtool = '';
-  module.exports.performance.maxAssetSize = 250000;
-  module.exports.performance.maxEntrypointSize = 250000;
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: false,
-      cache: true,
-      parallel: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
-  ])
-} else {
-  console.log('Webpack for development')
 }
