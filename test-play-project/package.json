@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-loader": "^7.1.2",
+    "css-loader": "^0.28.7",
+    "sass-loader": "^6.0.6",
+    "vue-loader": "^13.0.5",
+    "webpack": "^3.6.0",
+    "webpack-deps": "",
+    "webpack-dev-server": "^2.9.1"
+  }
+}

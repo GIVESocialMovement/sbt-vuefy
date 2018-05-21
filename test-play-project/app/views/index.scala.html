@@ -1,0 +1,24 @@
+@(greeting: String)
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+<script src='@routes.Assets.versioned("vue/components/greeting-form.js")'></script>
+
+<script>
+  function parse(s) {
+    return JSON.parse(decodeURIComponent(escape(atob(s))));
+  }
+</script>
+
+<div id="app"></div>
+<script>
+  var app = new Vue({
+    el: '#app',
+    render: function(html) {
+      return html(GreetingForm.default, {
+        props: {
+          greeting: parse("@libraries.Base64.encodeString(greeting)")
+        }
+      });
+    }
+  })
+</script>

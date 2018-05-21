@@ -1,0 +1,14 @@
+logs
+target
+.DS_Store
+.g8
+.idea
+.idea_modules
+.classpath
+.project
+.settings
+.gradle
+package-lock.json
+RUNNING_PID
+node_modules
+yarn-error.log
