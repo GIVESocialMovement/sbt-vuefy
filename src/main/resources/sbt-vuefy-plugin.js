@@ -43,16 +43,16 @@ const writeStats = (compilation) => {
 };
 
 class SbtVuefyPlugin {
-	apply(compiler) {
+  apply(compiler) {
     compiler.plugin("compilation", (compilation) => {
-			compilation.mainTemplate.plugin('asset-path', replacePathVariables);
-		});
+      compilation.mainTemplate.plugin('asset-path', replacePathVariables);
+    });
 
-	  compiler.plugin("emit", (compilation, callback) => {
+    compiler.plugin("emit", (compilation, callback) => {
       writeStats(compilation);
       callback();
-	  });
-	}
+    });
+  }
 }
 
 module.exports = SbtVuefyPlugin;
