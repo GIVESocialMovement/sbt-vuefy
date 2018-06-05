@@ -8,6 +8,8 @@ sbt-vuefy integrates Vue's single components into Playframework. It hot-reloads 
 
 Please see the example project in the folder `test-play-project`.
 
+Also, see our blog post for some more explanation: https://give.engineering/2018/06/05/vue-js-with-playframework.html
+
 Requirements
 -------------
 
