@@ -4,11 +4,14 @@ sbt-vuefy
 [![CircleCI](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master.svg?style=shield)](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master)
 [![codecov](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy/branch/master/graph/badge.svg)](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy)
 
-sbt-vuefy integrates Vue's single components into Playframework.
-
-It hot-reloads the changes of Vue components while running Playframework with `sbt run`.
+sbt-vuefy integrates Vue's single components into Playframework. It hot-reloads the changes of Vue components while running Playframework with `sbt run`. It also works with `sbt stage`, which triggers the production build.
 
 Please see the example project in the folder `test-play-project`.
+
+Requirements
+-------------
+
+You'll need to install Webpack and vue-loader and give the webpack binary location to sbt-vuefy.
 
 
 How to use
@@ -95,14 +98,16 @@ Therefore, we can use the component as shown below:
 Please see the folder `test-play-project` for a complete example.
 
 
-Interested in using the plugin
+Interested in using the plugin?
 --------------------------------
 
 Please feel free to open an issue to ask questions. Let us know how you want to use the plugin.
 
 
-How to develop
+Contributing
 ---------------
+
+The project welcomes any contribution. Here are the steps for testing when developing locally:
 
 1. Run `yarn install` in order to install packages needed for the integration tests.
 2. Run `sbt test` to run all tests.
