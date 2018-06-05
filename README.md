@@ -14,7 +14,7 @@ Please see the example project in the folder `test-play-project`.
 How to use
 -----------
 
-### 1. Add a plugin
+### 1. Install the plugin
 
 Add the below line to `project/plugins.sbt`:
 
@@ -25,7 +25,7 @@ lazy val sbtVuefy = RootProject(uri("git://github.com/GIVESocialMovement/sbt-vue
 You may change `master` to a specific commit.
 
 
-### 2. Configure Webpack's config file.
+### 2. Configure Webpack config file.
 
 Create `webpack.config.js` with the below specifications:
 
@@ -107,3 +107,9 @@ How to develop
 1. Run `yarn install` in order to install packages needed for the integration tests.
 2. Run `sbt test` to run all tests.
 3. To test the plugin on an actual Playframework project, go to `test-play-project`, run `yarn install`, and run `sbt run`
+
+
+Future improvement
+--------------------
+
+* `VueKeys.prodCommands` is hacky. There must be a better way of implementing the production build setting.
