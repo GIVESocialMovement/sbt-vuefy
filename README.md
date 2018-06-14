@@ -24,6 +24,8 @@ How to use
 Add the below line to `project/plugins.sbt`:
 
 ```
+lazy val root = Project("plugins", file(".")).aggregate(sbtVuefy).dependsOn(sbtVuefy)
+
 lazy val sbtVuefy = RootProject(uri("git://github.com/GIVESocialMovement/sbt-vuefy.git#master"))
 ```
 
