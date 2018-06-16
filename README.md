@@ -107,7 +107,7 @@ Please see the folder `test-play-project` for a complete example.
 Interested in using the plugin?
 --------------------------------
 
-Please feel free to open an issue to ask questions. Let us know how you want to use the plugin.
+Please feel free to open an issue to ask questions. Let us know how you want to use the plugin. We want to help you use the plugin successfully.
 
 
 Contributing
