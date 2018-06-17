@@ -28,10 +28,10 @@ Add the below line to `project/plugins.sbt`:
 ```
 lazy val root = Project("plugins", file(".")).aggregate(sbtVuefy).dependsOn(sbtVuefy)
 
-lazy val sbtVuefy = RootProject(uri("git://github.com/GIVESocialMovement/sbt-vuefy.git#master"))
+lazy val sbtVuefy = RootProject(uri("git://github.com/GIVESocialMovement/sbt-vuefy.git#82cf00ebc95cf97e0781ea385796d1e8ecb14971"))
 ```
 
-You may change `master` to a specific commit.
+You may change `82cf00ebc95cf97e0781ea385796d1e8ecb14971` to a specific commit that you want.
 
 
 ### 2. Configure Webpack config file.
