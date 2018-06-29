@@ -67,6 +67,8 @@ This config file will be copied and used by sbt-vuefy when compiling Vue compone
 Specifying necessary configurations:
 
 ```
+lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, SbtVuefy) // Enable the plugin
+
 Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")  // the command that triggers production build (webpack -p).
 Assets / VueKeys.vuefy / VueKeys.webpackBinary := "./node_modules/.bin/webpack"  // The location of the webpack binary.
 Assets / VueKeys.vuefy / VueKeys.webpackConfig := "./webpack.config.js"  // the location of the webpack configuration.
