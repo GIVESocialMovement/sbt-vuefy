@@ -26,9 +26,9 @@ How to use
 Add the below line to `project/plugins.sbt`:
 
 ```
-lazy val root = Project("plugins", file(".")).aggregate(sbtVuefy).dependsOn(sbtVuefy)
+resolvers += Resolver.bintrayRepo("givers", "maven")
 
-lazy val sbtVuefy = RootProject(uri("git://github.com/GIVESocialMovement/sbt-vuefy.git#82cf00ebc95cf97e0781ea385796d1e8ecb14971"))
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "1.0.0")
 ```
 
 You may change `82cf00ebc95cf97e0781ea385796d1e8ecb14971` to a specific commit that you want.
