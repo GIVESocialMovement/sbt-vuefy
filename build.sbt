@@ -1,6 +1,6 @@
 lazy val `sbt-vuefy` = project in file(".")
 
-scalaVersion := "2.12.5"
+scalaVersion := "2.12.6"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.6.9",
