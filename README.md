@@ -31,8 +31,6 @@ resolvers += Resolver.bintrayRepo("givers", "maven")
 addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "1.0.0")
 ```
 
-You may change `82cf00ebc95cf97e0781ea385796d1e8ecb14971` to a specific commit that you want.
-
 
 ### 2. Configure Webpack config file.
 
