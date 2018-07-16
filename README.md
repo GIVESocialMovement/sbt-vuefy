@@ -12,10 +12,12 @@ Also, see our blog post for some more detail: https://give.engineering/2018/06/0
 
 This plugin is currently used at [GIVE.asia](https://give.asia).
 
+
 Requirements
 -------------
 
-You'll need to install Webpack and vue-loader and give the webpack binary location to sbt-vuefy.
+* __[Webpack](https://webpack.js.org/) and [vue-loader](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location. This enables you to choose your own version of Webpack and etc. You can see an example in the folder `test-play-project`.
+* __Playframework 2.6:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that it doesn't work with Playframework 2.5
 
 
 How to use
