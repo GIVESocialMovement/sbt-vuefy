@@ -17,7 +17,7 @@ Requirements
 -------------
 
 * __[Webpack](https://webpack.js.org/) and [vue-loader](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
-* __Playframework 2.6:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that it doesn't work with Playframework 2.5
+* __Playframework 2.6:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
 
 
 How to use
