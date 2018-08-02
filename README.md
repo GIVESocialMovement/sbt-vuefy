@@ -69,9 +69,14 @@ Specifying necessary configurations:
 ```
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, SbtVuefy) // Enable the plugin
 
-Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")  // the command that triggers production build (webpack -p).
-Assets / VueKeys.vuefy / VueKeys.webpackBinary := "./node_modules/.bin/webpack"  // The location of the webpack binary.
-Assets / VueKeys.vuefy / VueKeys.webpackConfig := "./webpack.config.js"  // the location of the webpack configuration.
+// The commands that triggers production build (as in `webpack -p`)
+Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")
+
+// The location of the webpack binary. For windows, it might be `webpack.cmd`.
+Assets / VueKeys.vuefy / VueKeys.webpackBinary := "./node_modules/.bin/webpack"
+
+// The location of the webpack configuration.
+Assets / VueKeys.vuefy / VueKeys.webpackConfig := "./webpack.config.js"
 ```
 
 ### 4. Find out where the output JS file is and how to use it

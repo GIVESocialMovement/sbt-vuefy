@@ -14,9 +14,6 @@ case class CompilationEntry(inputFile: File, filesRead: Set[Path], filesWritten:
 case class Input(name: String, path: Path)
 
 
-object Compiler {
-}
-
 class Shell {
   def execute(cmd: String, cwd: File, envs: (String, String)*): Int = {
     import scala.sys.process._
@@ -26,6 +23,8 @@ class Shell {
 }
 
 class ComputeDependencyTree {
+  val LOCAL_PATH_PREFIX_REGEX = "^\\./".r
+
   def apply(file: File): Map[String, Set[String]] = {
     apply(scala.io.Source.fromFile(file).mkString)
   }
@@ -49,6 +48,9 @@ class ComputeDependencyTree {
       // We only care about our directories.
       .filter { case (key, _) => key.startsWith("./")}
       .mapValues(_.filter(_.startsWith("./")))
+      .map { case (key, values) =>
+        LOCAL_PATH_PREFIX_REGEX.replaceAllIn(key, "") -> values.map { v => LOCAL_PATH_PREFIX_REGEX.replaceAllIn(v, "") }
+      }
   }
 
   private[this] def flatten(deps: Map[String, Set[String]]): Map[String, Set[String]] = {
@@ -139,7 +141,7 @@ class Compiler(
             val outputFile = targetDir / outputRelativePath
 
             val dependencies = dependencyMap
-              .getOrElse(s"./${input.name}.vue", Set.empty)
+              .getOrElse(s"${input.name}.vue", Set.empty)
               .map { relativePath =>
                 (sourceDir / relativePath).toPath
               }

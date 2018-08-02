@@ -12,5 +12,5 @@ libraryDependencies ++= Seq(
 )
 
 Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")
-Assets / VueKeys.vuefy / VueKeys.webpackBinary := "./node_modules/.bin/webpack"
-Assets / VueKeys.vuefy / VueKeys.webpackConfig := "./webpack.config.js"
+Assets / VueKeys.vuefy / VueKeys.webpackBinary := (new File(".") / "node_modules" / ".bin" / "webpack").getAbsolutePath
+Assets / VueKeys.vuefy / VueKeys.webpackConfig := (new File(".") / "webpack.config.js").getAbsolutePath
