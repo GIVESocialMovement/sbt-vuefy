@@ -1,3 +1,4 @@
+const pathModule = require('path')
 
 const replacePathVariables = (path, data) => {
   const REGEXP_CAMEL_CASE_NAME = /\[camel-case-name\]/gi;
@@ -6,7 +7,7 @@ const replacePathVariables = (path, data) => {
 	}
 
   if (data && data.chunk && data.chunk.name) {
-    let tokens = data.chunk.name.split('/');
+    let tokens = data.chunk.name.split(pathModule.sep);
     return path.replace(
       REGEXP_CAMEL_CASE_NAME,
       tokens[tokens.length - 1]
