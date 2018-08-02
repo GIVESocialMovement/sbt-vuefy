@@ -25,6 +25,10 @@ class Shell {
 class ComputeDependencyTree {
   val LOCAL_PATH_PREFIX_REGEX = "^\\./".r
 
+  def sanitize(s: String): String = {
+    LOCAL_PATH_PREFIX_REGEX.replaceAllIn(s, "").replaceAllLiterally("/", sbt.Path.sep.toString)
+  }
+
   def apply(file: File): Map[String, Set[String]] = {
     apply(scala.io.Source.fromFile(file).mkString)
   }
@@ -46,10 +50,11 @@ class ComputeDependencyTree {
 
     flatten(deps)
       // We only care about our directories.
+      // The path separator here is always `/`, even on windows.
       .filter { case (key, _) => key.startsWith("./")}
       .mapValues(_.filter(_.startsWith("./")))
       .map { case (key, values) =>
-        LOCAL_PATH_PREFIX_REGEX.replaceAllIn(key, "") -> values.map { v => LOCAL_PATH_PREFIX_REGEX.replaceAllIn(v, "") }
+        sanitize(key) -> values.map(sanitize)
       }
   }
 
@@ -79,12 +84,11 @@ class PrepareWebpackConfig {
 
     Files.copy(originalWebpackConfig.toPath, targetFile.toPath)
 
-    new PrintWriter(tmpDir.toFile / "sbt-vuefy-plugin.js") {
-      try {
-        write(Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString)
-      } finally {
-        close()
-      }
+    val p = new PrintWriter(tmpDir.toFile / "sbt-vuefy-plugin.js")
+    try {
+      p.write(Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString)
+    } finally {
+      p.close()
     }
 
     targetFile.getAbsolutePath

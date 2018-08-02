@@ -81,8 +81,11 @@ object CompilerSpec extends BaseSpec {
         when(shell.execute(any(), any(), any())).thenReturn(0)
         when(computeDependencyTree.apply(any[File]())).thenReturn(
           Map(
-            "a/b/c.vue" -> Set("a/b/c.vue"),
-            "a/b.vue" -> Set("a/b.vue", "a/b/c.vue")
+            Seq("a", "b", "c.vue").mkString(Path.sep.toString) -> Set(Seq("a", "b", "c.vue").mkString(Path.sep.toString)),
+            Seq("a", "b.vue").mkString(Path.sep.toString) -> Set(
+              Seq("a", "b.vue").mkString(Path.sep.toString),
+              Seq("a", "b", "c.vue").mkString(Path.sep.toString)
+            )
           )
         )
         val inputPaths = Seq(file1.toPath, file2.toPath)
@@ -124,7 +127,10 @@ object CompilerSpec extends BaseSpec {
 
       Files.exists(Paths.get(webpackConfig)) ==> true
       Files.exists(sbtVuefyFile.toPath) ==> true
-      Source.fromFile(sbtVuefyFile).mkString ==> Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString
+
+      val src = Source.fromFile(sbtVuefyFile)
+      src.mkString ==> Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString
+      src.close()
 
       Files.deleteIfExists(originalWebpackConfig)
       Files.deleteIfExists(sbtVuefyFile.toPath)
@@ -132,8 +138,7 @@ object CompilerSpec extends BaseSpec {
 
     'buildDependencies - {
       val compute = new ComputeDependencyTree
-      def make(s: String) = s"vue/$s"
-      def prefix(s: String) = s"./$s"
+      def make(s: String) = s"vue${Path.sep}$s"
       val a = make("a")
       val b = make("b")
       val c = make("c")
@@ -141,22 +146,23 @@ object CompilerSpec extends BaseSpec {
       val nonVue = "non-vue"
 
       "builds correctly with flatten" - {
+        // Even on window, the path separator from webpack's command is still `/`.
         val jsonStr = JsArray(Seq(
           Json.obj(
-            "name" -> prefix(a),
+            "name" -> "./vue/a",
             "reasons" -> Seq.empty[String]
           ),
           Json.obj(
-            "name" -> prefix(b),
-            "reasons" -> Seq(prefix(a))
+            "name" -> "./vue/b",
+            "reasons" -> Seq("./vue/a")
           ),
           Json.obj(
-            "name" -> prefix(c),
-            "reasons" -> Seq(prefix(b))
+            "name" -> "./vue/c",
+            "reasons" -> Seq("./vue/b")
           ),
           Json.obj(
-            "name" -> prefix(d),
-            "reasons" -> Seq(prefix(a))
+            "name" -> "./vue/d",
+            "reasons" -> Seq("./vue/a")
           )
         )).toString
 
@@ -171,15 +177,15 @@ object CompilerSpec extends BaseSpec {
       "handles non ./vue correctly" - {
         val jsonStr = JsArray(Seq(
           Json.obj(
-            "name" -> prefix(a),
+            "name" -> "./vue/a",
             "reasons" -> Seq.empty[String]
           ),
           Json.obj(
             "name" -> nonVue,
-            "reasons" -> Seq(prefix(a))
+            "reasons" -> Seq("./vue/a")
           ),
           Json.obj(
-            "name" -> prefix(c),
+            "name" -> "./vue/c",
             "reasons" -> Seq(nonVue)
           )
         )).toString
@@ -193,16 +199,16 @@ object CompilerSpec extends BaseSpec {
       "handles cyclic dependencies" - {
         val jsonStr = JsArray(Seq(
           Json.obj(
-            "name" -> prefix(a),
-            "reasons" -> Seq(prefix(c))
+            "name" -> "./vue/a",
+            "reasons" -> Seq("./vue/c")
           ),
           Json.obj(
-            "name" -> prefix(b),
-            "reasons" -> Seq(prefix(a))
+            "name" -> "./vue/b",
+            "reasons" -> Seq("./vue/a")
           ),
           Json.obj(
-            "name" -> prefix(c),
-            "reasons" -> Seq(prefix(b))
+            "name" -> "./vue/c",
+            "reasons" -> Seq("./vue/b")
           ),
         )).toString()
 
