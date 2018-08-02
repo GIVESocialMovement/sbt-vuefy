@@ -12,5 +12,12 @@ libraryDependencies ++= Seq(
 )
 
 Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")
-Assets / VueKeys.vuefy / VueKeys.webpackBinary := (new File(".") / "node_modules" / ".bin" / "webpack").getAbsolutePath
+Assets / VueKeys.vuefy / VueKeys.webpackBinary := {
+  // Detect windows
+  if (sys.props.getOrElse("os.name", "").toLowerCase.contains("win")) {
+    (new File(".") / "node_modules" / ".bin" / "webpack.cmd").getAbsolutePath
+  } else {
+    (new File(".") / "node_modules" / ".bin" / "webpack").getAbsolutePath
+  }
+}
 Assets / VueKeys.vuefy / VueKeys.webpackConfig := (new File(".") / "webpack.config.js").getAbsolutePath

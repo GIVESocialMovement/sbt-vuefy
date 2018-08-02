@@ -15,7 +15,11 @@ object CompilerIntegrationSpec extends BaseSpec {
       "run webpack and get result correctly" - {
         val targetDir = Files.createTempDirectory("sbt-vuefy-compiler-integration-spec").toFile
         val compiler = new Compiler(
-          webpackBinary = new File("node_modules") / ".bin" / "webpack",
+          webpackBinary = if (sys.props.getOrElse("os.name", "").toLowerCase.contains("win")) {
+            new File("node_modules") / ".bin" / "webpack.cmd" // Detect Windows
+          } else {
+            new File("node_modules") / ".bin" / "webpack"
+          },
           webpackConfig = new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "webpack.config.js",
           sourceDir = new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets",
           targetDir = targetDir,
