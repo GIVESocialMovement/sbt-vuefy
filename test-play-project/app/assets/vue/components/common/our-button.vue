@@ -1,7 +1,6 @@
 <template>
   <button class="our-button" @click="click">
     <slot></slot>
-
   </button>
 </template>
 

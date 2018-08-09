@@ -1,3 +1,5 @@
+"use strict";
+
 const pathModule = require('path')
 
 const replacePathVariables = (path, data) => {
