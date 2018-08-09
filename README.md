@@ -3,6 +3,7 @@ sbt-vuefy
 
 [![CircleCI](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master.svg?style=shield)](https://circleci.com/gh/GIVESocialMovement/sbt-vuefy/tree/master)
 [![codecov](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy/branch/master/graph/badge.svg)](https://codecov.io/gh/GIVESocialMovement/sbt-vuefy)
+[![Bintray](https://img.shields.io/bintray/v/givers/maven/sbt-vuefy.svg?maxAge=600)](https://bintray.com/givers/maven/sbt-vuefy)
 
 sbt-vuefy integrates Vue's single components into Playframework. It hot-reloads the changes of Vue components while running Playframework with `sbt run`. It also works with `sbt stage`, which triggers the production build.
 
@@ -30,7 +31,7 @@ Add the below line to `project/plugins.sbt`:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "1.2.0")
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "LATEST_VERSION")
 ```
 
 
