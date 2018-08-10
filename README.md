@@ -131,5 +131,5 @@ The project welcomes any contribution. Here are the steps for testing when devel
 Future improvement
 --------------------
 
-* `VueKeys.prodCommands` is hacky. There must be a better way of implementing the production build setting.
-* Currently, the plugin doesn't track CSS dependencies (e.g. using `@import`) because webpack/vue-loader doesn't track these dependencies. We need to find a way.
+* Currently, the plugin doesn't track CSS dependencies (e.g. using `@import`) because webpack/vue-loader doesn't track these dependencies. We need to find a way. See the ongoing issue: https://github.com/GIVESocialMovement/sbt-vuefy/issues/20
+* `VueKeys.prodCommands` is hacky. I use this approach because I don't have good understanding in SBT's scoping. There must be a better way of implementing the production build setting.
