@@ -1,5 +1,5 @@
 <template>
-  <div>A<component-b></component-b></div>
+  <div class="beautiful-box">A<component-b></component-b></div>
 </template>
 
 <script>
@@ -10,4 +10,5 @@
 </script>
 
 <style scoped lang="scss">
+  @import './dependencies/style.scss';
 </style>

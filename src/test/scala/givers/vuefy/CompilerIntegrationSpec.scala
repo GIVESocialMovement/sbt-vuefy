@@ -28,10 +28,11 @@ object CompilerIntegrationSpec extends BaseSpec {
           nodeModules =  new File("node_modules")
         )
 
+        val baseInputDir = new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "vue"
         val inputs = Seq(
-          new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "vue" / "component-a.vue",
-          new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "vue" / "dependencies/component-b.vue",
-          new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "vue" / "dependencies/component-c.vue"
+          baseInputDir / "component-a.vue",
+          baseInputDir / "dependencies/component-b.vue",
+          baseInputDir / "dependencies/component-c.vue"
         )
         val result = compiler.compile(inputs.map(_.toPath))
 
@@ -53,6 +54,9 @@ object CompilerIntegrationSpec extends BaseSpec {
         result.entries(2).filesWritten.head ==> (targetDir / "vue" / "dependencies" / "component-c.js").toPath
 
         result.entries.head.filesRead ==> inputs.map(_.toPath).toSet
+        // If CSS dependency is tracked properly, the below should have been true.
+        // See more: https://github.com/GIVESocialMovement/sbt-vuefy/issues/20
+//        result.entries.head.filesRead ==> inputs.map(_.toPath).toSet ++ Set(baseInputDir / "dependencies" / "style.scss")
         result.entries(1).filesRead ==> Set(inputs(1).toPath, inputs(2).toPath)
         result.entries(2).filesRead ==> Set(inputs(2).toPath)
       }
