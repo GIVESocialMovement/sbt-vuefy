@@ -154,15 +154,15 @@ object CompilerSpec extends BaseSpec {
           ),
           Json.obj(
             "name" -> "./vue/b",
-            "reasons" -> Seq("./vue/a")
+            "reasons" -> Seq("./vue/a + 4 modules")
           ),
           Json.obj(
             "name" -> "./vue/c",
-            "reasons" -> Seq("./vue/b")
+            "reasons" -> Seq("./vue/b + 4 modules")
           ),
           Json.obj(
             "name" -> "./vue/d",
-            "reasons" -> Seq("./vue/a")
+            "reasons" -> Seq("./vue/a + 4 modules")
           )
         )).toString
 
@@ -182,10 +182,10 @@ object CompilerSpec extends BaseSpec {
           ),
           Json.obj(
             "name" -> nonVue,
-            "reasons" -> Seq("./vue/a")
+            "reasons" -> Seq("./vue/a + 4 modules")
           ),
           Json.obj(
-            "name" -> "./vue/c",
+            "name" -> "./vue/c + 4 modules",
             "reasons" -> Seq(nonVue)
           )
         )).toString
@@ -200,15 +200,15 @@ object CompilerSpec extends BaseSpec {
         val jsonStr = JsArray(Seq(
           Json.obj(
             "name" -> "./vue/a",
-            "reasons" -> Seq("./vue/c")
+            "reasons" -> Seq("./vue/c + 4 modules")
           ),
           Json.obj(
             "name" -> "./vue/b",
-            "reasons" -> Seq("./vue/a")
+            "reasons" -> Seq("./vue/a + 4 modules")
           ),
           Json.obj(
             "name" -> "./vue/c",
-            "reasons" -> Seq("./vue/b")
+            "reasons" -> Seq("./vue/b + 4 modules")
           ),
         )).toString()
 

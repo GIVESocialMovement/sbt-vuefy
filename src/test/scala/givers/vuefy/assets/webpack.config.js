@@ -2,6 +2,7 @@
 
 const path = require('path')
 const webpack = require('webpack')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 // Required by sbt-vuefy.
 const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js')
@@ -13,21 +14,29 @@ module.exports = {
     filename: '[name].js', // Required by sbt-vuefy.
   },
   plugins: [
-    new SbtVuefyPlugin() // Required by sbt-vuefy.
+    new SbtVuefyPlugin(), // Required by sbt-vuefy.
+    new VueLoaderPlugin()
   ],
   module: {
     rules: [
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+      },
+      {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
         options: {
-          loaders: {
-            'scss': [
-              'vue-style-loader',
-              'css-loader',
-              'sass-loader'
-            ]
-          }
+          appendTsSuffixTo: [/\.vue$/]
         }
       },
       {
@@ -36,6 +45,12 @@ module.exports = {
         loader: 'babel-loader'
       }
     ]
+  },
+  externals: {
+    vue: 'Vue'
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.vue']
   },
   performance: {
     hints: 'error',

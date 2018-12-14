@@ -1,10 +1,11 @@
 "use strict";
 
-const path = require('path')
-const webpack = require('webpack')
+const path = require('path');
+const webpack = require('webpack');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 // Required by sbt-vuefy.
-const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js')
+const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
 
 module.exports = {
   output: {
@@ -13,7 +14,8 @@ module.exports = {
     filename: '[name].js', // Required by sbt-vuefy.
   },
   plugins: [
-    new SbtVuefyPlugin() // Required by sbt-vuefy.
+    new SbtVuefyPlugin(), // Required by sbt-vuefy.
+    new VueLoaderPlugin()
   ],
   cache: true,
   bail: true,
@@ -22,14 +24,21 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
+      },
+      {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
         options: {
-          loaders: {
-            'scss': [
-              'vue-style-loader',
-              'css-loader',
-              'sass-loader'
-            ]
-          }
+          appendTsSuffixTo: [/\.vue$/],
         }
       },
       {
@@ -38,6 +47,13 @@ module.exports = {
         loader: 'babel-loader'
       }
     ]
+  },
+  externals: {
+    // The below allows Typescript to `import Vue from 'vue'` without including Vue in the bundle.
+    vue: 'Vue'
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.vue']
   },
   performance: {
     hints: 'error',
@@ -48,7 +64,7 @@ module.exports = {
     }
   },
   devtool: ''
-}
+};
 
 if (process.env.NODE_ENV === 'production') {
   console.log('Webpack for production')
