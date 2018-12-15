@@ -130,7 +130,8 @@ The project welcomes any contribution. Here are the steps for testing when devel
 
 1. Run `yarn install` in order to install packages needed for the integration tests.
 2. Run `sbt test` to run all tests.
-3. To test the plugin on an actual Playframework project, go to `test-play-project`, run `yarn install`, and run `sbt run`
+3. To test the plugin on an actual Playframework project, go to `test-play-project`, run `yarn install`, and run `sbt run`.
+4. To publish, run `sbt clean publish`.
 
 
 Future improvement
