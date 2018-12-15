@@ -43,7 +43,7 @@ class ComputeDependencyTree {
           .flatMap {
             case JsNull => None
             // For some reason, webpack or vue-loader includes the string ` + 4 modules` in `moduleName`.
-            // See: https://stackoverflow.com/questions/53789505/why-does-modulename-in-webpacks-stats-include-4-modules
+            // See: https://github.com/webpack/webpack/issues/8507
             case JsString(v) => Some(v.split(" \\+ ").head)
             case _ => throw new IllegalArgumentException()
           }
