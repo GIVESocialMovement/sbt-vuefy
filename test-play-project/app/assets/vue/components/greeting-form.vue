@@ -2,16 +2,25 @@
   <div class="greeting-form">
     <h1>{{ greeting }}</h1>
     <p>Value: {{ toggleText }}</p>
-    <our-button @click="toggle">Toggle button</our-button>
+    <our-button ref="button" @click="toggle">Toggle button</our-button>
+    <our-js-button ref="jsButton" @click="toggle">Toggle JS button</our-js-button>
   </div>
 </template>
 
-<script>
-  import OurButton from './common/our-button.vue'
+<script lang="ts">
+  import Vue from 'vue';
 
-  Vue.component('our-button', OurButton);
+  import { Type as OurButton } from './common/our-button.vue';
 
-  export default {
+  Vue.component('our-button', require('./common/our-button.vue').default);
+  Vue.component('our-js-button', require('./common/our-js-button.vue').default);
+
+  // Since a JS component doesn't have type, we need to provide the type in order for Typescript to compile.
+  interface OurJsButton extends Vue {
+    testMessage(): void
+  }
+
+  export default Vue.extend({
     props: {
       greeting: {
         type: String,
@@ -24,7 +33,7 @@
       };
     },
     computed: {
-      toggleText: function() {
+      toggleText(): string {
         if (this.toggleValue) {
           return "on";
         } else {
@@ -33,11 +42,13 @@
       }
     },
     methods: {
-      toggle: function() {
+      toggle(): void {
         this.toggleValue = !this.toggleValue;
+        (<OurButton>(this.$refs.button)).testMessage();
+        (<OurJsButton>(this.$refs.jsButton)).testMessage();
       }
     }
-  };
+  });
 </script>
 
 <style scoped lang="scss">

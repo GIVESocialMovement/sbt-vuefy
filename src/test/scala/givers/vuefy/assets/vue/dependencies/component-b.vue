@@ -2,10 +2,12 @@
   <div>B<component-c></component-c></div>
 </template>
 
-<script>
-  import ComponentC from './component-c.vue'
-  Vue.component('component-c', ComponentC);
-  export default {}
+<script lang="ts">
+  import Vue from 'vue'
+
+  Vue.component('component-c', require('./component-c.vue').default);
+
+  export default Vue.extend({});
 </script>
 
 <style scoped lang="scss">

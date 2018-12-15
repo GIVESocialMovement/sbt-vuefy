@@ -4,14 +4,24 @@
   </button>
 </template>
 
-<script>
-  export default {
+<script lang="ts">
+  import Vue from 'vue';
+
+  export interface Type extends Vue {
+    click(): void
+    testMessage(): void
+  }
+
+  export default Vue.extend({
     methods: {
-      click: function() {
+      click(): void {
         this.$emit('click');
+      },
+      testMessage(): void {
+        console.log('our-button receives the message.');
       }
     }
-  };
+  });
 </script>
 
 <style scoped lang="scss">

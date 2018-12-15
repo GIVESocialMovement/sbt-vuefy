@@ -47,13 +47,12 @@ const writeStats = (compilation) => {
 
 class SbtVuefyPlugin {
   apply(compiler) {
-    compiler.plugin("compilation", (compilation) => {
-      compilation.mainTemplate.plugin('asset-path', replacePathVariables);
+    compiler.hooks.compilation.tap("sbt-vuefy-compilation", (compilation) => {
+      compilation.mainTemplate.hooks.assetPath.tap('sbt-vuefy-asset-path', replacePathVariables);
     });
 
-    compiler.plugin("emit", (compilation, callback) => {
+    compiler.hooks.emit.tap("sbt-vuefy-emit", (compilation) => {
       writeStats(compilation);
-      callback();
     });
   }
 }

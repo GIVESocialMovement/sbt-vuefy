@@ -3,8 +3,7 @@
 </template>
 
 <script>
-  import ComponentB from './dependencies/component-b.vue'
-  Vue.component('component-b', ComponentB);
+  Vue.component('component-b', require('./dependencies/component-b.vue').default);
 
   export default {}
 </script>

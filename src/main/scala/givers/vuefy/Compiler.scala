@@ -3,8 +3,7 @@ package givers.vuefy
 import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Path}
 
-import play.api.libs.json.Reads._
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json._
 import sbt.internal.util.ManagedLogger
 
 import scala.io.Source
@@ -38,10 +37,19 @@ class ComputeDependencyTree {
 
     val deps = json.as[JsArray].value
       .flatMap { obj =>
-        val name = obj("name").as[String]
-        val relations = obj("reasons").as[Seq[String]].map { reason =>
-          reason -> name
-        }
+        // For some reason, webpack or vue-loader includes the string ` + 4 modules` in `name`.
+        val name = obj("name").as[String].split(" \\+ ").head
+        val relations = obj("reasons").as[Seq[JsValue]]
+          .flatMap {
+            case JsNull => None
+            // For some reason, webpack or vue-loader includes the string ` + 4 modules` in `moduleName`.
+            // See: https://stackoverflow.com/questions/53789505/why-does-modulename-in-webpacks-stats-include-4-modules
+            case JsString(v) => Some(v.split(" \\+ ").head)
+            case _ => throw new IllegalArgumentException()
+          }
+          .map { reason =>
+            reason -> name
+          }
 
         relations ++ Seq(name -> name) // the file also depends on itself.
       }
@@ -52,7 +60,14 @@ class ComputeDependencyTree {
       // We only care about our directories.
       // The path separator here is always `/`, even on windows.
       .filter { case (key, _) => key.startsWith("./")}
-      .mapValues(_.filter(_.startsWith("./")))
+      .mapValues { vs =>
+        vs.filter { v =>
+          // There are some dependencies that we don't care about.
+          // An example: ./vue/component-a.vue?vue&type=style&index=0&id=f8aaa26e&scoped=true&lang=scss&
+          // Another example: /home/tanin/projects/sbt-vuefy/node_modules/vue-style-loader!/home/ta...
+          v.startsWith("./") && !v.contains("?")
+        }
+      }
       .map { case (key, values) =>
         sanitize(key) -> values.map(sanitize)
       }

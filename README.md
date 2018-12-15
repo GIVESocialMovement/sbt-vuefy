@@ -7,7 +7,9 @@ sbt-vuefy
 
 sbt-vuefy integrates Vue's single components into Playframework. It hot-reloads the changes of Vue components while running Playframework with `sbt run`. It also works with `sbt stage`, which triggers the production build.
 
-Please see the example project in the folder `test-play-project`. Also, see our blog post for some more detail: https://give.engineering/2018/06/05/vue-js-with-playframework.html
+Both Typescript and Javascript components are supported and can be mixed. Please see the example project in the folder `test-play-project`. 
+
+Also, see our blog post for some more detail: https://give.engineering/2018/06/05/vue-js-with-playframework.html
 
 This plugin is currently used at [GIVE.asia](https://give.asia).
 
@@ -15,7 +17,7 @@ This plugin is currently used at [GIVE.asia](https://give.asia).
 Requirements
 -------------
 
-* __[Webpack](https://webpack.js.org/) and [vue-loader](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
+* __[Webpack 4](https://webpack.js.org/) and [vue-loader 15](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
 * __Playframework 2.6:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
 
 
@@ -29,7 +31,7 @@ Add the below line to `project/plugins.sbt`:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "1.3.0")
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "2.0.0")
 ```
 
 
@@ -60,6 +62,11 @@ module.exports = {
 
 This config file will be copied and used by sbt-vuefy when compiling Vue components.
 
+You will need to configure `vue-loader` in the way that you want. 
+
+To make it work with Typescript, `tsconfig.json` is also needed to be setup.
+
+Please see `test-play-project` for a working example.
 
 ### 3. Configure `build.sbt`
 
