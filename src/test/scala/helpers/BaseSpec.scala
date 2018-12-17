@@ -1,13 +1,12 @@
 package helpers
 
+import org.mockito.ArgumentMatcher
 import org.mockito.internal.progress.ThreadSafeMockingProgress
-import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.mockito.verification.VerificationMode
-
-import scala.reflect.ClassTag
 import utest._
 
 import scala.collection.mutable
+import scala.reflect.ClassTag
 
 abstract class BaseSpec extends TestSuite {
 
