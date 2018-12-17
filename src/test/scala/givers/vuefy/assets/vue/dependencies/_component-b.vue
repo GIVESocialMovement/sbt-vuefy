@@ -5,7 +5,7 @@
 <script lang="ts">
   import Vue from 'vue'
 
-  Vue.component('component-c', require('./component-c.vue').default);
+  Vue.component('component-c', require('./_component-c.vue').default);
 
   export default Vue.extend({});
 </script>

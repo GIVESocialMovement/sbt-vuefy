@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  Vue.component('component-b', require('./dependencies/component-b.vue').default);
+  Vue.component('component-b', require('./dependencies/_component-b.vue').default);
 
   export default {}
 </script>

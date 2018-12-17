@@ -10,10 +10,10 @@
 <script lang="ts">
   import Vue from 'vue';
 
-  import { Type as OurButton } from './common/our-button.vue';
+  import { Type as OurButton } from './common/_our-button.vue';
 
-  Vue.component('our-button', require('./common/our-button.vue').default);
-  Vue.component('our-js-button', require('./common/our-js-button.vue').default);
+  Vue.component('our-button', require('./common/_our-button.vue').default);
+  Vue.component('our-js-button', require('./common/_our-js-button.vue').default);
 
   // Since a JS component doesn't have type, we need to provide the type in order for Typescript to compile.
   interface OurJsButton extends Vue {

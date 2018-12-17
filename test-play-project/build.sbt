@@ -21,3 +21,6 @@ Assets / VueKeys.vuefy / VueKeys.webpackBinary := {
   }
 }
 Assets / VueKeys.vuefy / VueKeys.webpackConfig := (new File(".") / "webpack.config.js").getAbsolutePath
+// All non-entry-points components, which are not included directly in HTML, should have the prefix `_`.
+// Webpack shouldn't compile non-entry-components directly. It's wasteful.
+Assets / VueKeys.vuefy / excludeFilter := "_*"
