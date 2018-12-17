@@ -3,6 +3,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 // Required by sbt-vuefy.
 const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
@@ -19,6 +20,7 @@ module.exports = {
   ],
   cache: true,
   bail: true,
+  stats: 'minimal',
   module: {
     rules: [
       {
@@ -67,27 +69,17 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-  console.log('Webpack for production')
+  console.log('Webpack for production');
   module.exports.devtool = '';
   module.exports.performance.maxAssetSize = 250000;
   module.exports.performance.maxEntrypointSize = 250000;
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
+  module.exports.optimization = (module.exports.optimization || {});
+  module.exports.optimization.minimizer = (module.exports.optimization.minimizer || []).concat([
+    new TerserPlugin({
       sourceMap: false,
       cache: true,
-      parallel: true,
-      compress: {
-        warnings: false
-      }
+      parallel: true
     }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
   ])
 } else {
   console.log('Webpack for development')
