@@ -37,36 +37,54 @@ addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "2.0.0")
 
 ### 2. Configure Webpack config file.
 
-Create `webpack.config.js` with the below specifications:
+Create `webpack.config.js` with `vue-loader`. Below is a working minimal example:
 
 ```
-...
+"use strict";
 
-// Required by sbt-vuefy.
-const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-  output: {
-    publicPath: '/assets', // Required by sbt-vuefy.
-    library: '[camel-case-name]', // Required by sbt-vuefy.
-    filename: '[name].js', // Required by sbt-vuefy.
+  plugins: [new VueLoaderPlugin()],
+  stats: 'minimal',
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      },
+      {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
+      }
+    ]
   },
-  plugins: [
-    new SbtVuefyPlugin() // Required by sbt-vuefy.
-  ],
-  ...
-}
-
-...
+  resolve: {
+    extensions: ['.ts', '.js', '.vue']
+  }
+};
 ```
 
-This config file will be copied and used by sbt-vuefy when compiling Vue components.
+You don't need to specify `module.exports.output` because sbt-vuefy will automatically set the field.
 
-You will need to configure `vue-loader` in the way that you want. 
+Your config file will be copied and added with some required additional code. Then, it will used by sbt-vuefy when compiling Vue components.
 
-To make it work with Typescript, `tsconfig.json` is also needed to be setup.
+When running sbt-vuefy, we print the webpack command with the modified `webpack.config.js`, so you can inspect the config that we use.
 
-Please see `test-play-project` for a working example.
+To make it work with Typescript, `tsconfig.json` is also needed to be setup. Please see `test-play-project` for a working example.
+
 
 ### 3. Configure `build.sbt`
 

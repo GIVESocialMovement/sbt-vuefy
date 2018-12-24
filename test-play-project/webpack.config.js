@@ -1,21 +1,10 @@
 "use strict";
 
-const path = require('path');
-const webpack = require('webpack');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-// Required by sbt-vuefy.
-const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
-
 module.exports = {
-  output: {
-    publicPath: '/assets', // Required by sbt-vuefy.
-    library: '[camel-case-name]', // Required by sbt-vuefy.
-    filename: '[name].js', // Required by sbt-vuefy.
-  },
   plugins: [
-    new SbtVuefyPlugin(), // Required by sbt-vuefy.
     new VueLoaderPlugin()
   ],
   cache: true,
