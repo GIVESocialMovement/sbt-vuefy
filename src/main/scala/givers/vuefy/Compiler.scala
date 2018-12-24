@@ -1,6 +1,6 @@
 package givers.vuefy
 
-import java.io.{File, PrintWriter}
+import java.io.{File, FileOutputStream, PrintWriter}
 import java.nio.file.{Files, Path}
 
 import play.api.libs.json._
@@ -91,7 +91,7 @@ class ComputeDependencyTree {
 }
 
 class PrepareWebpackConfig {
-  def apply(originalWebpackConfig: File) = {
+  def apply(originalWebpackConfig: File, inputs: Seq[Input]) = {
     import sbt._
 
     val tmpDir = Files.createTempDirectory("sbt-vuefy")
@@ -99,11 +99,36 @@ class PrepareWebpackConfig {
 
     Files.copy(originalWebpackConfig.toPath, targetFile.toPath)
 
-    val p = new PrintWriter(tmpDir.toFile / "sbt-vuefy-plugin.js")
+    val webpackConfigFile = new PrintWriter(new FileOutputStream(targetFile, true))
     try {
-      p.write(Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString)
+      val entries = inputs.map { input =>
+        input.name -> JsString(input.path.toAbsolutePath.toString)
+      }
+
+      webpackConfigFile.write("\n")
+      webpackConfigFile.write(s"module.exports.entry = ${Json.prettyPrint(JsObject(entries))};")
+      webpackConfigFile.write(
+        """
+          |
+          |module.exports.output = module.exports.output || {};
+          |module.exports.output.publicPath = module.exports.output.publicPath || '/assets';
+          |module.exports.output.library = module.exports.output.library || '[camel-case-name]';
+          |module.exports.output.filename = module.exports.output.filename || '[name].js';
+          |
+          |const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
+          |module.exports.plugins = module.exports.plugins || [];
+          |module.exports.plugins.push(new SbtVuefyPlugin());
+          |
+        """.stripMargin)
     } finally {
-      p.close()
+      webpackConfigFile.close()
+    }
+
+    val sbtVuefyPluginFile = new PrintWriter(tmpDir.toFile / "sbt-vuefy-plugin.js")
+    try {
+      sbtVuefyPluginFile.write(Source.fromInputStream(getClass.getResourceAsStream("/sbt-vuefy-plugin.js")).mkString)
+    } finally {
+      sbtVuefyPluginFile.close()
     }
 
     targetFile.getAbsolutePath
@@ -135,15 +160,11 @@ class Compiler(
       Input(name, inputFile)
     }
 
-    val cmd = (
-      Seq(
-        webpackBinary.getCanonicalPath,
-        "--config", prepareWebpackConfig.apply(webpackConfig),
-        "--output-path", targetDir.getCanonicalPath,
-        if (isProd) { "-p" } else { "-d" }
-      ) ++ inputs.map { input =>
-        s"""${input.name}=${input.path.toAbsolutePath.toString}"""
-      }
+    val cmd = Seq(
+      webpackBinary.getCanonicalPath,
+      "--config", prepareWebpackConfig.apply(webpackConfig, inputs),
+      "--output-path", targetDir.getCanonicalPath,
+      if (isProd) { "-p" } else { "-d" }
     ).mkString(" ")
 
     logger.info(cmd)

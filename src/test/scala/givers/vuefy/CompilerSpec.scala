@@ -36,9 +36,9 @@ object CompilerSpec extends BaseSpec {
         computeDependencyTree,
         prepareWebpackConfig
       )
-      val preparedConfigFile = new File("new") / "webpack" / "prepared-config.js"
 
-      when(prepareWebpackConfig.apply(any())).thenReturn(preparedConfigFile.getAbsolutePath)
+      val preparedConfigFile = new File("new") / "webpack" / "prepared-config.js"
+      when(prepareWebpackConfig.apply(any(), any())).thenReturn(preparedConfigFile.getAbsolutePath)
 
       "handles empty" - {
         compiler.compile(Seq.empty) ==> CompilationResult(true, Seq.empty)
@@ -55,7 +55,9 @@ object CompilerSpec extends BaseSpec {
         result.success ==> false
         result.entries.isEmpty ==> true
 
-        verify(prepareWebpackConfig).apply(originalConfigFile)
+        verify(prepareWebpackConfig).apply(
+          originalWebpackConfig = originalConfigFile,
+          inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
         verifyZeroInteractions(computeDependencyTree)
         verify(shell).execute(
           eq(
@@ -63,9 +65,7 @@ object CompilerSpec extends BaseSpec {
               webpackBinaryFile.getCanonicalPath,
               "--config", preparedConfigFile.getAbsolutePath,
               "--output-path", targetDir.getCanonicalPath,
-              "-p",
-              s"$module1=${file1.getAbsolutePath}",
-              s"$module2=${file2.getAbsolutePath}"
+              "-p"
             ).mkString(" ")),
           eq(sourceDir),
           varArgsThat[(String, String)] { varargs =>
@@ -101,16 +101,16 @@ object CompilerSpec extends BaseSpec {
         result.entries(1).filesRead ==> Set((sourceDir / "a" / "b.vue").toPath, (sourceDir / "a" / "b" / "c.vue").toPath)
         result.entries(1).filesWritten ==> Set((targetDir / "a" / "b.js").toPath)
 
-        verify(prepareWebpackConfig).apply(originalConfigFile)
+        verify(prepareWebpackConfig).apply(
+          originalWebpackConfig = originalConfigFile,
+          inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
         verify(computeDependencyTree).apply(targetDir / "sbt-vuefy-tree.json")
         verify(shell).execute(
           eq(Seq(
             webpackBinaryFile.getCanonicalPath,
             "--config", preparedConfigFile.getAbsolutePath,
             "--output-path", targetDir.getCanonicalPath,
-            "-p",
-            s"$module1=${file1.getAbsolutePath}",
-            s"$module2=${file2.getAbsolutePath}"
+            "-p"
           ).mkString(" ")),
           eq(sourceDir),
           varArgsThat[(String, String)] { varargs =>
@@ -122,7 +122,12 @@ object CompilerSpec extends BaseSpec {
 
     'getWebpackConfig - {
       val originalWebpackConfig = Files.createTempFile("test", "test")
-      val webpackConfig = (new PrepareWebpackConfig).apply(originalWebpackConfig.toFile)
+      val sourceDir = new File("sourceDir") / "somepath"
+      val (module1, file1) = Seq("a", "b", "c").mkString(Path.sep.toString) -> (sourceDir / "a" / "b" / "c.vue")
+
+      val webpackConfig = (new PrepareWebpackConfig).apply(
+        originalWebpackConfig = originalWebpackConfig.toFile,
+        inputs = Seq(Input(module1, file1.toPath)))
       val sbtVuefyFile = new File(webpackConfig).getParentFile / "sbt-vuefy-plugin.js"
 
       Files.exists(Paths.get(webpackConfig)) ==> true
