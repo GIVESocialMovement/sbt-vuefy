@@ -31,7 +31,7 @@ Add the below line to `project/plugins.sbt`:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "2.0.0")
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "3.0.0")
 ```
 
 
