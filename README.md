@@ -17,9 +17,9 @@ This plugin is currently used at [GIVE.asia](https://give.asia).
 Requirements
 -------------
 
-* __[Webpack 4](https://webpack.js.org/) and [vue-loader 15](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
-* __Playframework 2.6:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
-* __Scala 2.12 and SBT 1.0+:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue. 
+* __[Webpack 4.x](https://webpack.js.org/) and [vue-loader 15.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
+* __Playframework 2.6.x:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
+* __Scala 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue. 
 
 
 How to use
