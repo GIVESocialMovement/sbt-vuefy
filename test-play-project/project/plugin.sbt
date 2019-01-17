@@ -4,4 +4,4 @@ lazy val sbtVuefy = RootProject(file("./..").getCanonicalFile.toURI)
 
 resolvers += Classpaths.sbtPluginReleases
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.21")
