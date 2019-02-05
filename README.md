@@ -11,7 +11,7 @@ Both Typescript and Javascript components are supported and can be mixed. Please
 
 Also, see our blog post for some more detail: https://give.engineering/2018/06/05/vue-js-with-playframework.html
 
-This plugin is currently used at [GIVE.asia](https://give.asia).
+This plugin is currently used at [GIVE.asia](https://give.asia), which has more than 200 Vue components in both Javascript and Typescript.
 
 
 Requirements
