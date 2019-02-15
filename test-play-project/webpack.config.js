@@ -57,7 +57,8 @@ module.exports = {
   devtool: ''
 };
 
-if (process.env.NODE_ENV === 'production') {
+// If the arguments includes `-p`, it means we are doing the production build.
+if (process.argv.includes('-p')) {
   console.log('Webpack for production');
   module.exports.devtool = '';
   module.exports.performance.maxAssetSize = 250000;
