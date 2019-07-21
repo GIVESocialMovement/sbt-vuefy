@@ -7,7 +7,7 @@ sbt-vuefy
 
 sbt-vuefy integrates Vue's single components into Playframework. It hot-reloads the changes of Vue components while running Playframework with `sbt run`. It also works with `sbt stage`, which triggers the production build.
 
-Both Typescript and Javascript components are supported and can be mixed. Please see the example project in the folder `test-play-project`. 
+Both Typescript and Javascript components are supported and can be mixed. Please see the example project in the folder `test-play-project`.
 
 Also, see our blog post for some more detail: https://give.engineering/2018/06/05/vue-js-with-playframework.html
 
@@ -19,7 +19,7 @@ Requirements
 
 * __[Webpack 4.x](https://webpack.js.org/) and [vue-loader 15.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
 * __Playframework 2.6.x:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
-* __Scala 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue. 
+* __Scala 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue.
 
 
 How to use
@@ -29,10 +29,18 @@ How to use
 
 Add the below line to `project/plugins.sbt`:
 
+For Playframework 2.6.x:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
 addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "4.0.0")
+```
+
+For Playframework 2.7.x:
+```
+resolvers += Resolver.bintrayRepo("givers", "maven")
+
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "4.1.0")
 ```
 
 The artifacts are published to Bintray here: https://bintray.com/givers/maven/sbt-vuefy
