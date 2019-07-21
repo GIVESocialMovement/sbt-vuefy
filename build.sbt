@@ -6,9 +6,9 @@ lazy val `sbt-vuefy` = (project in file("."))
   .settings(
     scalaVersion := "2.12.8",
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json" % "2.7.4",
-      "org.mockito" % "mockito-core" % "3.0.0" % Test,
-      "com.lihaoyi" %% "utest" % "0.7.1" % Test
+      "com.typesafe.play" %% "play-json"   % "2.7.4",
+      "org.mockito"       % "mockito-core" % "3.0.0" % Test,
+      "com.lihaoyi"       %% "utest"       % "0.7.1" % Test
     ),
     testFrameworks += new TestFramework("utest.runner.Framework")
   )
@@ -24,3 +24,12 @@ lazy val `sbt-vuefy` = (project in file("."))
   )
 
 addSbtJsEngine("1.2.3")
+
+addCommandAlias(
+  "fmt",
+  "all scalafmtSbt scalafmt test:scalafmt"
+)
+addCommandAlias(
+  "check",
+  "all scalafmtSbtCheck scalafmtCheck test:scalafmtCheck"
+)

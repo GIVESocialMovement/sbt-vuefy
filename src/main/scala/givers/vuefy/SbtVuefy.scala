@@ -1,27 +1,29 @@
 package givers.vuefy
 
-
 import com.typesafe.sbt.web.Import.WebKeys._
 import com.typesafe.sbt.web.SbtWeb.autoImport._
 import com.typesafe.sbt.web._
 import com.typesafe.sbt.web.incremental._
 import sbt.Keys._
 import sbt._
-import xsbti.{Position, Problem, Severity}
+import xsbti.{ Position, Problem, Severity }
 
 import scala.io.Source
 
 object SbtVuefy extends AutoPlugin {
-  override def requires: Plugins = SbtWeb
+  override def requires: Plugins      = SbtWeb
   override def trigger: PluginTrigger = AllRequirements
 
   object autoImport {
     object VueKeys {
-      val vuefy = TaskKey[Seq[File]]("vuefy", "Generate compiled Javascripts files from Vue components.")
-      val webpackBinary = TaskKey[String]("vuefyWebpackBinary", "The binary location for webpack.")
-      val webpackConfig = TaskKey[String]("vuefyWebpackConfig", "The location for webpack config.")
+      val vuefy           = TaskKey[Seq[File]]("vuefy", "Generate compiled Javascripts files from Vue components.")
+      val webpackBinary   = TaskKey[String]("vuefyWebpackBinary", "The binary location for webpack.")
+      val webpackConfig   = TaskKey[String]("vuefyWebpackConfig", "The location for webpack config.")
       val nodeModulesPath = TaskKey[String]("vuefyNodeModules", "The location of the node_modules.")
-      val prodCommands = TaskKey[Set[String]]("vuefyProdCommands", "A set of SBT commands that triggers production build. The default is `stage`. In other words, use -p (as opposed to -d) with webpack.")
+      val prodCommands = TaskKey[Set[String]](
+        "vuefyProdCommands",
+        "A set of SBT commands that triggers production build. The default is `stage`. In other words, use -p (as opposed to -d) with webpack."
+      )
     }
   }
 
@@ -35,33 +37,36 @@ object SbtVuefy extends AutoPlugin {
     webpackBinary := "please-define-the-binary",
     webpackConfig := "please-define-the-config-location.js",
     resourceManaged in vuefy := webTarget.value / "vuefy" / "main",
-    managedResourceDirectories in Assets+= (resourceManaged in vuefy in Assets).value,
+    managedResourceDirectories in Assets += (resourceManaged in vuefy in Assets).value,
     resourceGenerators in Assets += vuefy in Assets,
     vuefy in Assets := task.dependsOn(WebKeys.webModules in Assets).value
   )
 
-
   override def projectSettings: Seq[Setting[_]] = inConfig(Assets)(baseSbtVuefySettings)
 
   lazy val task = Def.task {
-    val sourceDir = (sourceDirectory in Assets).value
-    val targetDir = (resourceManaged in vuefy in Assets).value
-    val logger = (streams in Assets).value.log
-    val vuefyReporter = (reporter in Assets).value
+    val sourceDir         = (sourceDirectory in Assets).value
+    val targetDir         = (resourceManaged in vuefy in Assets).value
+    val logger            = (streams in Assets).value.log
+    val vuefyReporter     = (reporter in Assets).value
     val prodCommandValues = (prodCommands in vuefy).value
-    val isProd = state.value.currentCommand.exists { exec => prodCommandValues.contains(exec.commandLine) }
+    val isProd = state.value.currentCommand.exists { exec =>
+      prodCommandValues.contains(exec.commandLine)
+    }
     val webpackBinaryLocation = (webpackBinary in vuefy).value
     val webpackConfigLocation = (webpackConfig in vuefy).value
-    val nodeModulesLocation = (nodeModulesPath in vuefy).value
+    val nodeModulesLocation   = (nodeModulesPath in vuefy).value
 
     val sources = (sourceDir ** ((includeFilter in vuefy in Assets).value -- (excludeFilter in vuefy in Assets).value)).get
 
     implicit val fileHasherIncludingOptions = OpInputHasher[File] { f =>
-      OpInputHash.hashString(Seq(
-        f.getCanonicalPath,
-        isProd,
-        sourceDir.getAbsolutePath
-      ).mkString("--"))
+      OpInputHash.hashString(
+        Seq(
+          f.getCanonicalPath,
+          isProd,
+          sourceDir.getAbsolutePath
+        ).mkString("--")
+      )
     }
 
     val results = incremental.syncIncremental((streams in Assets).value.cacheDirectory / "run", sources) { modifiedSources =>
@@ -80,7 +85,8 @@ object SbtVuefy extends AutoPlugin {
         targetDir,
         isProd,
         logger,
-        new File(nodeModulesLocation))
+        new File(nodeModulesLocation)
+      )
 
       // Compile all modified sources at once
       val result = compiler.compile(modifiedSources.map(_.toPath))
@@ -112,15 +118,15 @@ object SbtVuefy extends AutoPlugin {
               override def sourceFile() = java.util.Optional.empty()
             }
           })
-        } else { Seq.empty }
+        } else {
+          Seq.empty
+        }
       )
 
       // Collect OpResults
-      val opResults: Map[File, OpResult] = result.entries
-        .map { entry =>
-          entry.inputFile -> OpSuccess(entry.filesRead.map(_.toFile), entry.filesWritten.map(_.toFile))
-        }
-        .toMap
+      val opResults: Map[File, OpResult] = result.entries.map { entry =>
+        entry.inputFile -> OpSuccess(entry.filesRead.map(_.toFile), entry.filesWritten.map(_.toFile))
+      }.toMap
 
       // Collect the created files
       val createdFiles = result.entries.flatMap(_.filesWritten.map(_.toFile))

@@ -19,7 +19,7 @@ jobs:
           - v1-dependencies-
 
       - run: yarn install
-      - run: sbt coverage test coverageReport
+      - run: sbt check coverage test coverageReport
       - run: bash <(curl -s https://codecov.io/bash) -Z
       - run: mkdir -p ./target/junit && cp -R ./target/test-reports ./target/junit/test-reports
 

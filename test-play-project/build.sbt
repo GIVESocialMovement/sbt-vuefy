@@ -23,3 +23,12 @@ lazy val root = (project in file("."))
     // Webpack shouldn't compile non-entry-components directly. It's wasteful.
     Assets / VueKeys.vuefy / excludeFilter := "_*"
   )
+
+addCommandAlias(
+  "fmt",
+  "all scalafmtSbt scalafmt test:scalafmt"
+)
+addCommandAlias(
+  "check",
+  "all scalafmtSbtCheck scalafmtCheck test:scalafmtCheck"
+)
