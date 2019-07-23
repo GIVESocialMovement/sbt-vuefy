@@ -1,12 +1,12 @@
 package givers.vuefy
 
 import java.io.File
-import java.nio.file.{Files, Paths}
+import java.nio.file.{ Files, Paths }
 
 import helpers.BaseSpec
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.{ JsArray, Json }
 import sbt.internal.util.ManagedLogger
-import sbt.{Tests => _, _}
+import sbt.{ Tests => _, _ }
 import utest._
 
 import scala.io.Source
@@ -15,15 +15,15 @@ object CompilerSpec extends BaseSpec {
 
   val tests = Tests {
     'compile - {
-      val logger = mock[ManagedLogger]
-      val shell = mock[Shell]
+      val logger                = mock[ManagedLogger]
+      val shell                 = mock[Shell]
       val computeDependencyTree = mock[ComputeDependencyTree]
-      val prepareWebpackConfig = mock[PrepareWebpackConfig]
-      val sourceDir = new File("sourceDir") / "somepath"
-      val targetDir = new File("targetDir") / "anotherpath"
-      val nodeModulesDir = new File("node_modules")
-      val originalConfigFile = sourceDir / "config" / "webpack.config.js"
-      val webpackBinaryFile = sourceDir / "binary" / "webpack.binary"
+      val prepareWebpackConfig  = mock[PrepareWebpackConfig]
+      val sourceDir             = new File("sourceDir") / "somepath"
+      val targetDir             = new File("targetDir") / "anotherpath"
+      val nodeModulesDir        = new File("node_modules")
+      val originalConfigFile    = sourceDir / "config" / "webpack.config.js"
+      val webpackBinaryFile     = sourceDir / "binary" / "webpack.binary"
       val compiler = new Compiler(
         webpackBinaryFile,
         originalConfigFile,
@@ -50,23 +50,25 @@ object CompilerSpec extends BaseSpec {
 
         val (module1, file1) = Seq("a", "b", "c").mkString(Path.sep.toString) -> (sourceDir / "a" / "b" / "c.vue")
         val (module2, file2) = Seq("a", "b").mkString(Path.sep.toString) -> (sourceDir / "a" / "b.vue")
-        val inputPaths = Seq(file1.toPath, file2.toPath)
-        val result = compiler.compile(inputPaths)
+        val inputPaths       = Seq(file1.toPath, file2.toPath)
+        val result           = compiler.compile(inputPaths)
         result.success ==> false
         result.entries.isEmpty ==> true
 
-        verify(prepareWebpackConfig).apply(
-          originalWebpackConfig = originalConfigFile,
-          inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
+        verify(prepareWebpackConfig)
+          .apply(originalWebpackConfig = originalConfigFile, inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
         verifyZeroInteractions(computeDependencyTree)
         verify(shell).execute(
           eq(
             Seq(
               webpackBinaryFile.getCanonicalPath,
-              "--config", preparedConfigFile.getAbsolutePath,
-              "--output-path", targetDir.getCanonicalPath,
+              "--config",
+              preparedConfigFile.getAbsolutePath,
+              "--output-path",
+              targetDir.getCanonicalPath,
               "-p"
-            ).mkString(" ")),
+            ).mkString(" ")
+          ),
           eq(sourceDir),
           varArgsThat[(String, String)] { varargs =>
             varargs.size == 1 && varargs.head == ("NODE_PATH" -> nodeModulesDir.getCanonicalPath)
@@ -76,7 +78,7 @@ object CompilerSpec extends BaseSpec {
 
       "compiles successfully" - {
         val (module1, file1) = Seq("a", "b", "c").mkString(Path.sep.toString) -> (sourceDir / "a" / "b" / "c.vue")
-        val (module2, file2) = Seq("a", "b").mkString(Path.sep.toString) -> (sourceDir / "a" / "b.vue")
+        val (module2, file2) = Seq("a", "b").mkString(Path.sep.toString)      -> (sourceDir / "a" / "b.vue")
 
         when(shell.execute(any(), any(), any())).thenReturn(0)
         when(computeDependencyTree.apply(any[File]())).thenReturn(
@@ -89,7 +91,7 @@ object CompilerSpec extends BaseSpec {
           )
         )
         val inputPaths = Seq(file1.toPath, file2.toPath)
-        val result = compiler.compile(inputPaths)
+        val result     = compiler.compile(inputPaths)
         result.success ==> true
         result.entries.size ==> 2
 
@@ -101,17 +103,20 @@ object CompilerSpec extends BaseSpec {
         result.entries(1).filesRead ==> Set((sourceDir / "a" / "b.vue").toPath, (sourceDir / "a" / "b" / "c.vue").toPath)
         result.entries(1).filesWritten ==> Set((targetDir / "a" / "b.js").toPath)
 
-        verify(prepareWebpackConfig).apply(
-          originalWebpackConfig = originalConfigFile,
-          inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
+        verify(prepareWebpackConfig)
+          .apply(originalWebpackConfig = originalConfigFile, inputs = Seq(Input(module1, file1.toPath), Input(module2, file2.toPath)))
         verify(computeDependencyTree).apply(targetDir / "sbt-vuefy-tree.json")
         verify(shell).execute(
-          eq(Seq(
-            webpackBinaryFile.getCanonicalPath,
-            "--config", preparedConfigFile.getAbsolutePath,
-            "--output-path", targetDir.getCanonicalPath,
-            "-p"
-          ).mkString(" ")),
+          eq(
+            Seq(
+              webpackBinaryFile.getCanonicalPath,
+              "--config",
+              preparedConfigFile.getAbsolutePath,
+              "--output-path",
+              targetDir.getCanonicalPath,
+              "-p"
+            ).mkString(" ")
+          ),
           eq(sourceDir),
           varArgsThat[(String, String)] { varargs =>
             varargs.size == 1 && varargs.head == ("NODE_PATH" -> nodeModulesDir.getCanonicalPath)
@@ -122,12 +127,11 @@ object CompilerSpec extends BaseSpec {
 
     'getWebpackConfig - {
       val originalWebpackConfig = Files.createTempFile("test", "test")
-      val sourceDir = new File("sourceDir") / "somepath"
-      val (module1, file1) = Seq("a", "b", "c").mkString(Path.sep.toString) -> (sourceDir / "a" / "b" / "c.vue")
+      val sourceDir             = new File("sourceDir") / "somepath"
+      val (module1, file1)      = Seq("a", "b", "c").mkString(Path.sep.toString) -> (sourceDir / "a" / "b" / "c.vue")
 
-      val webpackConfig = (new PrepareWebpackConfig).apply(
-        originalWebpackConfig = originalWebpackConfig.toFile,
-        inputs = Seq(Input(module1, file1.toPath)))
+      val webpackConfig =
+        (new PrepareWebpackConfig).apply(originalWebpackConfig = originalWebpackConfig.toFile, inputs = Seq(Input(module1, file1.toPath)))
       val sbtVuefyFile = new File(webpackConfig).getParentFile / "sbt-vuefy-plugin.js"
 
       Files.exists(Paths.get(webpackConfig)) ==> true
@@ -142,34 +146,36 @@ object CompilerSpec extends BaseSpec {
     }
 
     'buildDependencies - {
-      val compute = new ComputeDependencyTree
+      val compute         = new ComputeDependencyTree
       def make(s: String) = s"vue${Path.sep}$s"
-      val a = make("a")
-      val b = make("b")
-      val c = make("c")
-      val d = make("d")
-      val nonVue = "non-vue"
+      val a               = make("a")
+      val b               = make("b")
+      val c               = make("c")
+      val d               = make("d")
+      val nonVue          = "non-vue"
 
       "builds correctly with flatten" - {
         // Even on window, the path separator from webpack's command is still `/`.
-        val jsonStr = JsArray(Seq(
-          Json.obj(
-            "name" -> "./vue/a",
-            "reasons" -> Seq.empty[String]
-          ),
-          Json.obj(
-            "name" -> "./vue/b",
-            "reasons" -> Seq("./vue/a + 4 modules")
-          ),
-          Json.obj(
-            "name" -> "./vue/c",
-            "reasons" -> Seq("./vue/b + 4 modules")
-          ),
-          Json.obj(
-            "name" -> "./vue/d",
-            "reasons" -> Seq("./vue/a + 4 modules")
+        val jsonStr = JsArray(
+          Seq(
+            Json.obj(
+              "name"    -> "./vue/a",
+              "reasons" -> Seq.empty[String]
+            ),
+            Json.obj(
+              "name"    -> "./vue/b",
+              "reasons" -> Seq("./vue/a + 4 modules")
+            ),
+            Json.obj(
+              "name"    -> "./vue/c",
+              "reasons" -> Seq("./vue/b + 4 modules")
+            ),
+            Json.obj(
+              "name"    -> "./vue/d",
+              "reasons" -> Seq("./vue/a + 4 modules")
+            )
           )
-        )).toString
+        ).toString
 
         compute(jsonStr) ==> Map(
           a -> Set(a, b, c, d),
@@ -180,20 +186,22 @@ object CompilerSpec extends BaseSpec {
       }
 
       "handles non ./vue correctly" - {
-        val jsonStr = JsArray(Seq(
-          Json.obj(
-            "name" -> "./vue/a",
-            "reasons" -> Seq.empty[String]
-          ),
-          Json.obj(
-            "name" -> nonVue,
-            "reasons" -> Seq("./vue/a + 4 modules")
-          ),
-          Json.obj(
-            "name" -> "./vue/c + 4 modules",
-            "reasons" -> Seq(nonVue)
+        val jsonStr = JsArray(
+          Seq(
+            Json.obj(
+              "name"    -> "./vue/a",
+              "reasons" -> Seq.empty[String]
+            ),
+            Json.obj(
+              "name"    -> nonVue,
+              "reasons" -> Seq("./vue/a + 4 modules")
+            ),
+            Json.obj(
+              "name"    -> "./vue/c + 4 modules",
+              "reasons" -> Seq(nonVue)
+            )
           )
-        )).toString
+        ).toString
 
         compute(jsonStr) ==> Map(
           a -> Set(a, c),
@@ -202,20 +210,22 @@ object CompilerSpec extends BaseSpec {
       }
 
       "handles cyclic dependencies" - {
-        val jsonStr = JsArray(Seq(
-          Json.obj(
-            "name" -> "./vue/a",
-            "reasons" -> Seq("./vue/c + 4 modules")
-          ),
-          Json.obj(
-            "name" -> "./vue/b",
-            "reasons" -> Seq("./vue/a + 4 modules")
-          ),
-          Json.obj(
-            "name" -> "./vue/c",
-            "reasons" -> Seq("./vue/b + 4 modules")
-          ),
-        )).toString()
+        val jsonStr = JsArray(
+          Seq(
+            Json.obj(
+              "name"    -> "./vue/a",
+              "reasons" -> Seq("./vue/c + 4 modules")
+            ),
+            Json.obj(
+              "name"    -> "./vue/b",
+              "reasons" -> Seq("./vue/a + 4 modules")
+            ),
+            Json.obj(
+              "name"    -> "./vue/c",
+              "reasons" -> Seq("./vue/b + 4 modules")
+            )
+          )
+        ).toString()
 
         compute(jsonStr) ==> Map(
           a -> Set(a, b, c),

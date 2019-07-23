@@ -5,7 +5,7 @@ import java.nio.file.Files
 
 import helpers.BaseSpec
 import sbt.internal.util.ManagedLogger
-import sbt.{Tests => _, _}
+import sbt.{ Tests => _, _ }
 import utest._
 
 object CompilerIntegrationSpec extends BaseSpec {
@@ -25,16 +25,16 @@ object CompilerIntegrationSpec extends BaseSpec {
           targetDir = targetDir,
           isProd = true,
           logger = mock[ManagedLogger],
-          nodeModules =  new File("node_modules")
+          nodeModules = new File("node_modules")
         )
 
         val baseInputDir = new File("src") / "test" / "scala" / "givers" / "vuefy" / "assets" / "vue"
-        val componentA = baseInputDir / "component-a.vue"
-        val componentD = baseInputDir / "component-d.vue"
-        val componentB = baseInputDir / "dependencies/_component-b.vue"
-        val componentC = baseInputDir / "dependencies/_component-c.vue"
-        val inputs = Seq(componentA, componentD)
-        val result = compiler.compile(inputs.map(_.toPath))
+        val componentA   = baseInputDir / "component-a.vue"
+        val componentD   = baseInputDir / "component-d.vue"
+        val componentB   = baseInputDir / "dependencies/_component-b.vue"
+        val componentC   = baseInputDir / "dependencies/_component-c.vue"
+        val inputs       = Seq(componentA, componentD)
+        val result       = compiler.compile(inputs.map(_.toPath))
 
         result.success ==> true
         result.entries.size ==> 2

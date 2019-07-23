@@ -12,3 +12,4 @@ package-lock.json
 RUNNING_PID
 node_modules
 yarn-error.log
+yarn.lock
