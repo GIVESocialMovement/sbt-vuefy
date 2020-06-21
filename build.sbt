@@ -4,9 +4,9 @@ name := "sbt-vuefy"
 lazy val `sbt-vuefy` = (project in file("."))
   .enablePlugins(SbtWebBase)
   .settings(
-    scalaVersion := "2.12.8",
+    scalaVersion := "2.12.11",
     libraryDependencies ++= Seq(
-      "com.typesafe.play" %% "play-json"   % "2.7.4",
+      "com.typesafe.play" %% "play-json"   % "2.8.1",
       "org.mockito"       % "mockito-core" % "3.0.0" % Test,
       "com.lihaoyi"       %% "utest"       % "0.7.1" % Test
     ),

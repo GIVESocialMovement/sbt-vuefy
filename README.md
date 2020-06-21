@@ -36,11 +36,11 @@ resolvers += Resolver.bintrayRepo("givers", "maven")
 addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "4.0.0")
 ```
 
-For Playframework 2.7.x:
+For Playframework 2.8.x:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "4.1.0")
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "5.0.0")
 ```
 
 The artifacts are published to Bintray here: https://bintray.com/givers/maven/sbt-vuefy
