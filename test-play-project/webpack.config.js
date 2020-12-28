@@ -1,9 +1,10 @@
 "use strict";
 
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const {VueLoaderPlugin} = require('vue-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
+const config = {
+  mode: 'development',
   plugins: [
     new VueLoaderPlugin()
   ],
@@ -13,30 +14,30 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: [
-          'vue-style-loader',
-          'css-loader',
-          'sass-loader'
-        ],
-      },
-      {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         loader: 'ts-loader',
         options: {
           appendTsSuffixTo: [/\.vue$/],
         }
       },
       {
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ],
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
-      }
+      },
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      },
     ]
   },
   externals: {
@@ -54,23 +55,27 @@ module.exports = {
       return assetFilename.endsWith('.js');
     }
   },
-  devtool: ''
+  devtool: 'eval-cheap-source-map',
 };
 
-// If the arguments includes `-p`, it means we are doing the production build.
-if (process.argv.includes('-p')) {
-  console.log('Webpack for production');
-  module.exports.devtool = '';
-  module.exports.performance.maxAssetSize = 250000;
-  module.exports.performance.maxEntrypointSize = 250000;
-  module.exports.optimization = (module.exports.optimization || {});
-  module.exports.optimization.minimizer = (module.exports.optimization.minimizer || []).concat([
-    new TerserPlugin({
-      sourceMap: false,
-      cache: true,
-      parallel: true
-    }),
-  ])
-} else {
-  console.log('Webpack for development')
-}
+module.exports = (env, argv) => {
+  if (argv.mode === 'production') {
+    console.log('Webpack for production');
+    config.devtool = 'production';
+    config.devtool = '';
+    config.performance.maxAssetSize = 250000;
+    config.performance.maxEntrypointSize = 250000;
+    config.optimization = (config.optimization || {});
+    config.optimization.minimizer = (config.optimization.minimizer || []).concat([
+      new TerserPlugin({
+        sourceMap: false,
+        cache: true,
+        parallel: true
+      }),
+    ])
+  } else {
+    console.log('Webpack for development')
+  }
+
+  return config;
+};

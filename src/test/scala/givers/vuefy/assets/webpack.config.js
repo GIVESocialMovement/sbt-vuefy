@@ -1,6 +1,6 @@
 "use strict";
 
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const {VueLoaderPlugin} = require('vue-loader');
 
 module.exports = {
   plugins: [new VueLoaderPlugin()],
@@ -14,7 +14,7 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         use: [
-          'vue-style-loader',
+          'style-loader',
           'css-loader',
           'sass-loader'
         ],
@@ -42,6 +42,5 @@ module.exports = {
   performance: {
     hints: 'error',
   },
-  stats: 'minimal',
-  devtool: ''
+  stats: 'minimal'
 };

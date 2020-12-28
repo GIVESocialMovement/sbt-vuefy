@@ -3,11 +3,13 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import {defineComponent} from 'vue'
 
-  Vue.component('component-c', require('./_component-c.vue').default);
+  const ComponentC = require('./_component-c').default;
 
-  export default Vue.extend({});
+  export default defineComponent({
+    components: {ComponentC}
+  });
 </script>
 
 <style scoped lang="scss">

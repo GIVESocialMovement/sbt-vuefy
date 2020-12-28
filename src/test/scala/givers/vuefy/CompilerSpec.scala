@@ -66,7 +66,8 @@ object CompilerSpec extends BaseSpec {
               preparedConfigFile.getAbsolutePath,
               "--output-path",
               targetDir.getCanonicalPath,
-              "-p"
+              "--mode",
+              "production"
             ).mkString(" ")
           ),
           eq(sourceDir),
@@ -90,6 +91,7 @@ object CompilerSpec extends BaseSpec {
             )
           )
         )
+
         val inputPaths = Seq(file1.toPath, file2.toPath)
         val result     = compiler.compile(inputPaths)
         result.success ==> true
@@ -114,7 +116,8 @@ object CompilerSpec extends BaseSpec {
               preparedConfigFile.getAbsolutePath,
               "--output-path",
               targetDir.getCanonicalPath,
-              "-p"
+              "--mode",
+              "production"
             ).mkString(" ")
           ),
           eq(sourceDir),
