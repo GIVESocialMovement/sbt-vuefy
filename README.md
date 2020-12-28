@@ -17,9 +17,9 @@ This plugin is currently used at [GIVE.asia](https://give.asia), which has more 
 Requirements
 -------------
 
-* __[Webpack 5.x](https://webpack.js.org/) and [vue-loader 15.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
-* __Playframework 2.8.x:__ 
-* __Scala 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue.
+* __[Webpack 5.x](https://webpack.js.org/) and [vue-loader 16.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
+* __Playframework 2.8.x__ 
+* __Scala >= 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue.
 
 How to use
 -----------
