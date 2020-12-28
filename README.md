@@ -95,7 +95,7 @@ Specifying necessary configurations:
 ```
 lazy val root = (project in file(".")).enablePlugins(PlayScala, SbtWeb, SbtVuefy) // Enable the plugin
 
-// The commands that triggers production build when running Webpack, as in `webpack -p`.
+// The commands that triggers production build when running Webpack, as in `webpack --mode production`.
 Assets / VueKeys.vuefy / VueKeys.prodCommands := Set("stage")
 
 // The location of the webpack binary. For windows, it might be `webpack.cmd`.
