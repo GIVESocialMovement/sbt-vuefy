@@ -2,8 +2,11 @@
   <div class="beautiful-box">D<component-c></component-c></div>
 </template>
 
-<script>
-  Vue.component('component-c', require('./dependencies/_component-c.vue').default);
+<script lang="ts">
+  import {defineComponent} from 'vue'
+  const ComponentC = require('./dependencies/_component-c').default;
 
-  export default {}
+  export default defineComponent({
+    components: {ComponentC}
+  });
 </script>

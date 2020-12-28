@@ -1,6 +1,6 @@
 @(greeting: String)
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script>
+<script src="https://unpkg.com/vue@@3.0.4/dist/vue.runtime.global.js"></script>
 <script src='@routes.Assets.versioned("vue/components/greeting-form.js")'></script>
 
 <script>
@@ -11,14 +11,13 @@
 
 <div id="app"></div>
 <script>
-  var app = new Vue({
-    el: '#app',
-    render: function(html) {
-      return html(GreetingForm.default, {
-        props: {
-          greeting: parse("@libraries.Base64.encodeString(greeting)")
-        }
-      });
-    }
-  })
+  Vue
+    .createApp({
+      render: function() {
+        return Vue.h(GreetingForm.default, {
+          greeting: @Html(libraries.Renderer(greeting))
+        });
+      }
+    })
+    .mount('#app');
 </script>

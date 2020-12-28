@@ -17,10 +17,9 @@ This plugin is currently used at [GIVE.asia](https://give.asia), which has more 
 Requirements
 -------------
 
-* __[Webpack 4.x](https://webpack.js.org/) and [vue-loader 15.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
-* __Playframework 2.6.x:__ This is because GIVE.asia uses Playframework 2.6. Anecdotally, I have been told that [it doesn't work with Playframework 2.5](https://github.com/GIVESocialMovement/sbt-vuefy/issues/10)
+* __[Webpack 5.x](https://webpack.js.org/) and [vue-loader 15.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
+* __Playframework 2.8.x:__ 
 * __Scala 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue.
-
 
 How to use
 -----------
@@ -29,18 +28,11 @@ How to use
 
 Add the below line to `project/plugins.sbt`:
 
-For Playframework 2.6.x:
+For Playframework 2.8.x and Vue 3:
 ```
 resolvers += Resolver.bintrayRepo("givers", "maven")
 
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "4.0.0")
-```
-
-For Playframework 2.8.x:
-```
-resolvers += Resolver.bintrayRepo("givers", "maven")
-
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "5.0.0")
+addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "6.0.0")
 ```
 
 The artifacts are published to Bintray here: https://bintray.com/givers/maven/sbt-vuefy
@@ -52,7 +44,7 @@ Create `webpack.config.js` with `vue-loader`. Below is a working minimal example
 ```
 "use strict";
 
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const {VueLoaderPlugin} = require('vue-loader');
 
 module.exports = {
   plugins: [new VueLoaderPlugin()],
@@ -67,7 +59,7 @@ module.exports = {
         test: /\.scss$/,
         exclude: /node_modules/,
         use: [
-          'vue-style-loader',
+          'style-loader',
           'css-loader',
           'sass-loader'
         ],
@@ -87,7 +79,7 @@ module.exports = {
 };
 ```
 
-You don't need to specify `module.exports.output` because sbt-vuefy will automatically set the field.
+You should NOT specify `module.exports.output` because sbt-vuefy will automatically set the field.
 
 Your config file will be copied and added with some required additional code. Then, it will used by sbt-vuefy when compiling Vue components.
 
@@ -125,20 +117,20 @@ The exported module name is the camel case of the file name. In the above exampl
 Therefore, we can use the component as shown below:
 
 ```
+<script src="https://unpkg.com/vue@@3.0.4/dist/vue.runtime.global.js"></script>
 <script src='@routes.Assets.versioned("vue/components/some-component.js")'></script>
 
 <div id="app"></div>
 <script>
-  var app = new Vue({
-    el: '#app',
-    render: function(html) {
-      return html(SomeComponent.default, {
-        props: {
-          someData: "data"
+  Vue
+      .createApp({
+        render: function() {
+          return Vue.h(SomeComponent.default, {
+            someProp: "SomePropValue"
+          });
         }
-      });
-    }
-  })
+      })
+      .mount('#app');
 </script>
 ```
 
@@ -159,7 +151,12 @@ The project welcomes any contribution. Here are the steps for testing when devel
 1. Run `yarn install` in order to install packages needed for the integration tests.
 2. Run `sbt test` to run all tests.
 3. To test the plugin on an actual Playframework project, go to `test-play-project`, run `yarn install`, and run `sbt run`.
-4. To publish, run `sbt clean publish`.
+
+Publish
+--------
+1. Get the latest master by running `git fetch`.
+2. Run `sbt clean publish` to publish.
+3. Tag the current commit with the current version: `git tag -a v[VERSION] -m "Version v[VERSION]"` and `git push origin --tags`.
 
 
 Future improvement

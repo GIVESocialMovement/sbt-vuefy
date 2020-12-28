@@ -5,14 +5,10 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue';
+  import { defineComponent } from 'vue'
 
-  export interface Type extends Vue {
-    click(): void
-    testMessage(): void
-  }
-
-  export default Vue.extend({
+  export default defineComponent({
+    emits: ['click'],
     methods: {
       click(): void {
         this.$emit('click');

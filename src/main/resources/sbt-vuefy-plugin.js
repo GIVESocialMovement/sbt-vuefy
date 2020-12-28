@@ -21,7 +21,7 @@ const replacePathVariables = (path, data) => {
   }
 };
 
-const writeStats = (compilation) => {
+const writeStats = (compilation, assets) => {
   const ms = [];
   for (let module of compilation.getStats().toJson().modules) {
     let reasons = [];
@@ -35,7 +35,7 @@ const writeStats = (compilation) => {
   }
 
   const s = JSON.stringify(ms);
-  compilation.assets['sbt-vuefy-tree.json'] = {
+  assets['sbt-vuefy-tree.json'] = {
     source() {
       return s;
     },
@@ -48,11 +48,15 @@ const writeStats = (compilation) => {
 class SbtVuefyPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap("sbt-vuefy-compilation", (compilation) => {
-      compilation.mainTemplate.hooks.assetPath.tap('sbt-vuefy-asset-path', replacePathVariables);
-    });
-
-    compiler.hooks.emit.tap("sbt-vuefy-emit", (compilation) => {
-      writeStats(compilation);
+      compilation.hooks.assetPath.tap('sbt-vuefy-asset-path', replacePathVariables);
+      compilation.hooks.processAssets.tap(
+        {
+          name: "sbt-vuefy-emit",
+          stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT
+        },
+        (assets) => {
+          writeStats(compilation, assets);
+        });
     });
   }
 }

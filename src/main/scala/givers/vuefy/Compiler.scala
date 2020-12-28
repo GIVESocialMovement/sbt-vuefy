@@ -21,6 +21,7 @@ class Shell {
 }
 
 class ComputeDependencyTree {
+
   val LOCAL_PATH_PREFIX_REGEX = "^\\./".r
 
   def sanitize(s: String): String =
@@ -109,18 +110,28 @@ class PrepareWebpackConfig {
       }
 
       webpackConfigFile.write("\n")
-      webpackConfigFile.write(s"module.exports.entry = ${Json.prettyPrint(JsObject(entries))};")
-      webpackConfigFile.write("""
-                                |
-                                |module.exports.output = module.exports.output || {};
-                                |module.exports.output.publicPath = module.exports.output.publicPath || '/assets';
-                                |module.exports.output.library = module.exports.output.library || '[camel-case-name]';
-                                |module.exports.output.filename = module.exports.output.filename || '[name].js';
-                                |
-                                |const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
-                                |module.exports.plugins = module.exports.plugins || [];
-                                |module.exports.plugins.push(new SbtVuefyPlugin());
-                                |
+      webpackConfigFile.write(s"""
+                                 |const userDefinedModuleExports = module.exports;
+                                 |
+                                 |module.exports = (env, argv) => {
+                                 |  let config;
+                                 |  if (typeof userDefinedModuleExports === 'function') {
+                                 |    config = userDefinedModuleExports(env, argv);
+                                 |  } else {
+                                 |    config = userDefinedModuleExports;
+                                 |  }
+                                 |  config.entry = ${Json.prettyPrint(JsObject(entries))};
+                                 |  config.output = config.output || {};
+                                 |  config.output.publicPath = config.output.publicPath || '/assets';
+                                 |  config.output.library = config.output.library || '[camel-case-name]';
+                                 |  config.output.filename = config.output.filename || '[name].js';
+                                 |
+                                 |  const SbtVuefyPlugin = require('./sbt-vuefy-plugin.js');
+                                 |  config.plugins = config.plugins || [];
+                                 |  config.plugins.push(new SbtVuefyPlugin());
+                                 |  return config;
+                                 |}
+                                 |
         """.stripMargin)
     } finally {
       webpackConfigFile.close()
@@ -168,10 +179,11 @@ class Compiler(
       prepareWebpackConfig.apply(webpackConfig, inputs),
       "--output-path",
       targetDir.getCanonicalPath,
+      "--mode",
       if (isProd) {
-        "-p"
+        "production"
       } else {
-        "-d"
+        "development"
       }
     ).mkString(" ")
 

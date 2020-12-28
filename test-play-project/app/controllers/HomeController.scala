@@ -10,6 +10,6 @@ class HomeController @Inject()(controllerComponents: ControllerComponents)(impli
     extends AbstractController(controllerComponents) {
 
   def index = Action.async {
-    Future(Ok(views.html.index("Welcome")))
+    Future(Ok(views.html.index("Welcome to <b>sbt-vuefy</b></script>")))
   }
 }
