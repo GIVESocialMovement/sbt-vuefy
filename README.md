@@ -17,7 +17,7 @@ Requirements
 
 * __[Webpack 5.x](https://webpack.js.org/) and [vue-loader 16.x](https://github.com/vuejs/vue-loader):__ you'll need to specify the webpack binary location and webpack's configuration localtion. This enables you to choose your own version of Webpack and your own Webpack's configuration. You can see an example in the folder `test-play-project`.
 * __Playframework 2.8.x__ 
-* __Scala >= 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://bintray.com/givers/maven/sbt-vuefy). If you would like other combinations of Scala and SBT versions, please open an issue.
+* __Scala >= 2.12.x and SBT 1.x:__ Because the artifact is only published this setting (See: https://search.maven.org/artifact/io.github.givesocialmovement/sbt-vuefy/6.0.0/jar). If you would like other combinations of Scala and SBT versions, please open an issue.
 
 How to use
 -----------
@@ -28,12 +28,10 @@ Add the below line to `project/plugins.sbt`:
 
 For Playframework 2.8.x and Vue 3:
 ```
-resolvers += Resolver.bintrayRepo("givers", "maven")
-
-addSbtPlugin("givers.vuefy" % "sbt-vuefy" % "6.0.0")
+addSbtPlugin("io.github.givesocialmovement" % "sbt-vuefy" % "6.0.0")
 ```
 
-The artifacts are published to Bintray here: https://bintray.com/givers/maven/sbt-vuefy
+The artifacts are published to Maven Central here: https://search.maven.org/artifact/io.github.givesocialmovement/sbt-vuefy/6.0.0/jar
 
 ### 2. Configure Webpack config file.
 
