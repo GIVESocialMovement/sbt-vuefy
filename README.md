@@ -28,7 +28,7 @@ Add the below line to `project/plugins.sbt`:
 
 For Playframework 2.8.x and Vue 3:
 ```
-addSbtPlugin("io.github.givesocialmovement" % "sbt-vuefy" % "6.0.0")
+addSbtPlugin("io.github.tanin47" % "sbt-vuefy" % "6.0.0")
 ```
 
 The artifacts are published to Maven Central here: https://search.maven.org/artifact/io.github.givesocialmovement/sbt-vuefy/6.0.0/jar
@@ -151,7 +151,8 @@ The project welcomes any contribution. Here are the steps for testing when devel
 Publish
 --------
 1. Get the latest master by running `git fetch`.
-2. Run `sbt clean publish` to publish.
+2. Delete the target folder.
+3. Run `sbt clean publishSigned`
 3. Tag the current commit with the current version: `git tag -a v[VERSION] -m "Version v[VERSION]"` and `git push origin --tags`.
 
 

@@ -30,34 +30,34 @@ object SbtVuefy extends AutoPlugin {
   import autoImport.VueKeys._
 
   val baseSbtVuefySettings = Seq(
-    excludeFilter in vuefy := HiddenFileFilter || "_*",
-    includeFilter in vuefy := "*.vue",
+    vuefy / excludeFilter := HiddenFileFilter || "_*",
+    vuefy / includeFilter := "*.vue",
     prodCommands := Set("stage"),
     nodeModulesPath := "./node_modules",
     webpackBinary := "please-define-the-binary",
     webpackConfig := "please-define-the-config-location.js",
-    resourceManaged in vuefy := webTarget.value / "vuefy" / "main",
-    managedResourceDirectories in Assets += (resourceManaged in vuefy in Assets).value,
-    resourceGenerators in Assets += vuefy in Assets,
-    vuefy in Assets := task.dependsOn(WebKeys.webModules in Assets).value
+    vuefy / resourceManaged := webTarget.value / "vuefy" / "main",
+    Assets / managedResourceDirectories += (Assets / vuefy / resourceManaged).value,
+    Assets / resourceGenerators += Assets / vuefy,
+    Assets / vuefy := task.dependsOn(Assets / WebKeys.webModules).value
   )
 
   override def projectSettings: Seq[Setting[_]] = inConfig(Assets)(baseSbtVuefySettings)
 
   lazy val task = Def.task {
-    val sourceDir         = (sourceDirectory in Assets).value
-    val targetDir         = (resourceManaged in vuefy in Assets).value
-    val logger            = (streams in Assets).value.log
-    val vuefyReporter     = (reporter in Assets).value
-    val prodCommandValues = (prodCommands in vuefy).value
+    val sourceDir         = (Assets / sourceDirectory).value
+    val targetDir         = (Assets / vuefy / resourceManaged).value
+    val logger            = (Assets / streams).value.log
+    val vuefyReporter     = (Assets / reporter).value
+    val prodCommandValues = (vuefy / prodCommands).value
     val isProd = state.value.currentCommand.exists { exec =>
       prodCommandValues.contains(exec.commandLine)
     }
-    val webpackBinaryLocation = (webpackBinary in vuefy).value
-    val webpackConfigLocation = (webpackConfig in vuefy).value
-    val nodeModulesLocation   = (nodeModulesPath in vuefy).value
+    val webpackBinaryLocation = (vuefy / webpackBinary).value
+    val webpackConfigLocation = (vuefy / webpackConfig).value
+    val nodeModulesLocation   = (vuefy / nodeModulesPath).value
 
-    val sources = (sourceDir ** ((includeFilter in vuefy in Assets).value -- (excludeFilter in vuefy in Assets).value)).get
+    val sources = (sourceDir ** ((Assets / vuefy / includeFilter).value -- (Assets / vuefy / excludeFilter).value)).get
 
     implicit val fileHasherIncludingOptions = OpInputHasher[File] { f =>
       OpInputHash.hashString(
@@ -69,7 +69,7 @@ object SbtVuefy extends AutoPlugin {
       )
     }
 
-    val results = incremental.syncIncremental((streams in Assets).value.cacheDirectory / "run", sources) { modifiedSources =>
+    val results = incremental.syncIncremental((Assets / streams).value.cacheDirectory / "run", sources) { modifiedSources =>
       val startInstant = System.currentTimeMillis
 
       if (modifiedSources.nonEmpty) {
